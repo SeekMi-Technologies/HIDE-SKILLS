@@ -25,3 +25,13 @@ Permissions are TWO layers — diagnose precisely:
     group containing it.
 - Empty search/list results can mean the same thing — the bot only sees what it was
   given.
+
+Meeting minutes (智能纪要 / 妙记) and forwarded docs:
+- A forwarded doc arrives as "[The user sent a … message titled '…', link: …]" —
+  extract the token from the link (…/docx/<token> or …/minutes/<token>) and fetch
+  it; with only a title, search: ["drive", "+search", "--query", "<title>"].
+- 智能纪要 documents are docx docs: ["docs", "+fetch", "--doc", "<token or URL>"].
+  Reading another person's minutes usually needs identity="user" (the speaker's own
+  access) — if a bot read is denied, retry as user or ask them to share the doc.
+- Extracting TODOs from minutes: quote each item VERBATIM with its owner; keep the
+  owner attribution from the minutes (谁的 todo 归谁), never merge owners.
