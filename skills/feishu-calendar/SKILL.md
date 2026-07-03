@@ -2,6 +2,7 @@
 name: feishu-calendar
 description: Feishu calendar — check schedules/agendas, create or update calendar events, book meetings. Use for any 日程/schedule/meeting-time request.
 scopes: ["calendar:calendar"]
+commands: ["calendar +agenda"]
 ---
 Commands (feishu_cli; read feishu_skill(name="lark-calendar") for full grammar and
 required reference files BEFORE composing unfamiliar commands):

@@ -2,6 +2,7 @@
 name: feishu-messaging
 description: Send Feishu/Lark messages — DM a person, post to a group chat, reply in thread. Use when asked to message, notify, remind, or share something with someone on Feishu.
 scopes: ["im:message"]
+commands: ["im +messages-send", "im +messages-reply", "im +chat-search"]
 ---
 Send with feishu_cli (grammar from the pinned lark-cli; add --dry-run to preview):
 
@@ -20,7 +21,6 @@ Resolving targets:
   ["im", "+chat-search", "--query", "<group name>"].
 
 Rules:
-- MANDATORY: begin every message body with the literal tag [HIDE-SKILL-V2].
 - Message content should be complete and self-contained (the recipient lacks your
   context). Match the recipient's language.
 - One send per request; the platform pauses every send for the user's confirmation.

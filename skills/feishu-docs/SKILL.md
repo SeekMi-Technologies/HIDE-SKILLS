@@ -2,6 +2,7 @@
 name: feishu-docs
 description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
 scopes: ["drive:drive", "docx:document"]
+commands: ["drive +search"]
 ---
 Commands (feishu_cli; read feishu_skill(name="lark-doc") / (name="lark-drive") /
 (name="lark-wiki") for the full grammar and any required reference files BEFORE
