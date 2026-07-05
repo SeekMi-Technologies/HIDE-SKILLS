@@ -2,7 +2,9 @@
 name: github-standup
 description: Summarize recent GitHub activity — "what did we ship", "my standup", progress reports from commits/PRs/issues. Read-only.
 ---
-Target repository: use the owner/repo given in your instructions.
+Target repository: a repository the user names always wins. Otherwise use the
+default repository from your [Connected integrations] status. If none is set,
+list repositories and ask which one — never guess.
 
 Window: unless the user names one ("last week", "since Monday"), summarize the LAST
 24 HOURS — compute `since` from the [Current turn] time.
