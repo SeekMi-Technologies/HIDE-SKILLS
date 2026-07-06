@@ -10,7 +10,7 @@ Send with feishu_cli (grammar from the pinned lark-cli; add --dry-run to preview
 - Post to chat:  ["im", "+messages-send", "--chat-id", "<oc_xxx>", "--markdown", "<text>"]
 - Plain text: use --text instead of --markdown.
 - Reply in thread: ["im", "+messages-reply", ...] (read the lark-im reference via
-  feishu_skill for reply/thread flags).
+  read_skill("lark-im") for reply/thread flags).
 - Always pass --idempotency-key <a-stable-key-you-derive-from-the-task> on sends when
   retrying is conceivable — it makes a duplicate send impossible.
 
@@ -24,4 +24,4 @@ Rules:
 - Message content should be complete and self-contained (the recipient lacks your
   context). Match the recipient's language.
 - One send per request; the platform pauses every send for the user's confirmation.
-- For the full im command surface, read feishu_skill(name="lark-im").
+- For the full im command surface, call read_skill("lark-im").
