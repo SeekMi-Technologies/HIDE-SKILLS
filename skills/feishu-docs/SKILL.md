@@ -4,8 +4,8 @@ description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 
 scopes: ["drive:drive", "docx:document"]
 commands: ["drive +search"]
 ---
-Commands (feishu_cli; read feishu_skill(name="lark-doc") / (name="lark-drive") /
-(name="lark-wiki") for the full grammar and any required reference files BEFORE
+Commands (feishu_cli; call read_skill("lark-doc") / ("lark-drive") /
+("lark-wiki") for the full grammar and any required reference files BEFORE
 composing unfamiliar commands):
 
 - Org-wide file search (bot-capable): ["drive", "+search", "--query", "<keywords>"]
