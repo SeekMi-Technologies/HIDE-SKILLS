@@ -18,10 +18,11 @@ Commands (grammar verified against the pinned lark-cli; open_ids come from the
   read_skill("lark-base", "references/formula-field-guide.md").
 
 - HARD RULE — a bot-created Base is invisible to the requester until shared:
-  ["drive", "+member-add", "--token", "<base url>", "--member-id", "<ou_requester>",
-   "--member-type", "openid", "--perm", "edit"]
-  (pauses once for the user's confirmation — expected), then put the Base URL in
-  your reply. If +base-create output carries permission_grant, report what it says.
+  ["drive", "+member-add", "--token", "<base_token>", "--type", "bitable",
+   "--member-id", "<ou_a,ou_b>", "--member-type", "openid", "--perm", "edit"]
+  --type bitable is REQUIRED with a bare token (a full URL infers it); --member-id
+  takes up to 10 comma-separated ids in ONE call. Then put the Base URL in your
+  reply. If +base-create output carries permission_grant, report what it says.
 
 - Records: ["base", "+record-upsert", "--base-token", "<tok>", "--table-id", "<表名|tbl_>",
    "--json", "{\"标题\":\"Alice\",\"状态\":\"Todo\"}"] — a TOP-LEVEL field map, never
