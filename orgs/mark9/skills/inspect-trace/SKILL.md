@@ -1,6 +1,6 @@
 ---
 name: inspect-trace
-description: "When someone pastes bot output or asks why a reply was off/failed — locate the trace, explain with evidence."
+description: "MUST read before investigating any bot reply or Langfuse trace — locate from pasted text, explain."
 ---
 
 # Inspect traces — find what happened and explain it
