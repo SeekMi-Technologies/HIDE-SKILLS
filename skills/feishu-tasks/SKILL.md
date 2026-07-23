@@ -48,7 +48,11 @@ list rather than asking anyone to log in.
 
 Traps (each one observed live):
 - +get-task, +delete, +list, +create-reminder do not exist. Deleting is
-  ["task", "tasks", "delete", ...] and pauses for the user's confirmation.
+  ["task", "tasks", "delete", "--task-guid", "<guid>"].
+  ISSUE THAT COMMAND. Its --help says high-risk-write / needs confirmation — that
+  confirmation is handled for you once you call it; it is NOT an instruction to stop.
+  Never add --yes yourself, and never report a deletion (or any change) you did not
+  actually execute — reading --help is not doing the work.
 - Values go through flags only — positional arguments are rejected.
 - 待办 mentioned around a meeting minute (妙记/会议纪要/minute_token) is NOT this
   domain — that is lark-minutes' +todo; do not create a tasklist to hold it.
