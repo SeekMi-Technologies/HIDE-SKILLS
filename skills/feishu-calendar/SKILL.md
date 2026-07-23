@@ -19,20 +19,26 @@ offset, e.g. 2026-07-06T18:00:00-07:00):
 Booking recipe (follow in order):
 1. Resolve every attendee's open_id (feishu-contacts skill; the [Team directory]
    block carries Chinese + English names).
-2. Determine each attendee's timezone. Try ["contact", "+get-user", "--user-id",
-   "<ou_>"] — if the response carries no timezone field (current grants may hide
-   it), use what the team directory / memory / the user said; if still unknown, ASK
-   rather than assume.
-3. +freebusy each attendee across the candidate window; on conflict use +suggestion
-   or propose alternatives — never double-book silently.
-4. Create ONE complete event (title, start/end WITH offset, all attendees). The
-   create runs directly with no human review — triple-check date, offset, and ids
-   BEFORE the call. For cross-timezone meetings compute the time in BOTH zones
+2. Determine each attendee's timezone from the team directory / memory / what the
+   user said; if still unknown, ASK rather than assume. Do NOT expect
+   ["contact", "+get-user"] to help — as bot it returns only ids, no timezone.
+3. Create ONE complete event (title, start/end WITH offset, all attendees), as bot.
+   The create runs directly with no human review — triple-check date, offset, and
+   ids BEFORE the call. For cross-timezone meetings compute the time in BOTH zones
    explicitly (mind the date line: LA evening = next-day Beijing morning) and state
-   both in your report.
+   both in your report. Attendees accept or decline in Feishu; that RSVP, not a
+   pre-check, is how conflicts surface.
 
-Identity: reading someone's PERSONAL calendar ("我的日程") needs identity="user"
-(the speaker's own view — feishu-identity skill); +create as bot invites attendees
-onto a bot-owned event, which is the normal booking path.
+IDENTITY — the whole booking path is bot. Never switch to identity="user" to book:
+- +create, +update and attendee invites all work as bot. `+create` on a bot-owned
+  calendar with attendees IS the normal booking flow.
+- **+freebusy as bot only sees the BOT'S OWN calendar.** For any other person it
+  returns `ok:true` with `data: null` — silently, with no error and no scope
+  warning (verified live 2026-07-23). An empty freebusy therefore means "unknown",
+  NEVER "free", and NEVER "I need user identity". Do not offer feishu_connect_user
+  because freebusy came back empty — just book and let attendees RSVP.
+- Only reading the SPEAKER's own personal calendar ("我的日程") justifies
+  identity="user", and only when they already have a connected identity.
+
 Destructive calendar changes (delete/update an existing event) pause for the
 user's confirmation; creates run directly.
