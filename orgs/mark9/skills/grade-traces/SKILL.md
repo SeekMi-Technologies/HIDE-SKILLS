@@ -72,24 +72,23 @@ only record, and every question answers itself with one read:
    (dedup above), and this grading routine's own runs (a trace whose request is
    this very goal — drop without scoring).
 4. Batch = up to 10 across all envs, oldest first. Empty → `report_nothing`, stop.
-5. Per trace: `langfuse_read_trace(trace_id)`, walk the checklist, then write TWO
-   scores (shapes verified live):
+5. Per trace: `langfuse_read_trace(trace_id)`, walk the checklist, then write the
+   verdict with ONE call:
 
-   ```json
-   {"traceId": "<id>", "name": "judge_pass", "value": 1, "dataType": "BOOLEAN",
-    "environment": "<the trace's env from the read header>",
-    "metadata": {"flags": {"turns-wasted": true}},
-    "comment": "<one sentence: the deciding evidence>"}
    ```
-   ```json
-   {"traceId": "<id>", "name": "judge_failure_mode", "value": "none",
-    "dataType": "CATEGORICAL", "environment": "<same>"}
+   langfuse_write_judgement(trace_id="<id>", passed=false,
+       failure_mode="incomplete",
+       comment="<see below>", flags="turns-wasted")
    ```
-   - BOOLEAN `value` is the JSON number 1 or 0 — never a string.
-   - CATEGORICAL `value` is a string.
-   - `environment` is mandatory on both; a score without it lands in `default` and is
-     lost to dashboards.
-   - Omit `metadata.flags` when no flags are set.
+   It writes both judge scores in the trace's own environment and returns the trace
+   url. `passed=true` requires `failure_mode="none"`; any real mode requires
+   `passed=false` — inconsistent verdicts are rejected, fix and retry once.
+
+   The `comment` is the improvement signal the team (and automated prompt tuning)
+   learns from — write it accordingly:
+   - Passing trace: one sentence naming the deciding evidence.
+   - Failing trace: two or three sentences — what concretely went wrong, the
+     evidence, and what the correct behaviour would have been.
 6. Digest (this reply is what the team reads, ≤15 lines): graded/passed counts per
    env, failure modes seen, each failed trace as `<mode>: <one-line why> — <url>`
    (createScore returns the url). No tables of passing traces, no rubric recitation,
