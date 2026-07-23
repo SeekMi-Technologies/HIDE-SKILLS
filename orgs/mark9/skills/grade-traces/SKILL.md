@@ -15,7 +15,7 @@ The goal that invoked you names the Langfuse environment(s) to grade and is the 
 source of that list. This skill is for scheduled batch grading; when a human asks you
 to review or explain a trace, that is the `inspect-trace` skill, not this one.
 (Exception: a request that names specific trace ids and says to grade them — grade
-exactly those ids with this rubric, skipping discovery, state, and quota.)
+exactly those ids with this rubric, skipping discovery and quota.)
 
 ## The rubric — ordered binary checks
 
@@ -45,42 +45,33 @@ before loading their toolkit) · `turns-wasted` (empty-arg retries, redundant ca
 tool error, never recovered cleanly) · `tool-output-integrity` (a tool result is a
 corruption marker, not a real result).
 
-## Routine state — how fires chain together
+## No state — everything derives from the scores
 
-State is one JSON object you read at the start and save at the end of every fire:
+This routine keeps NO saved state. The scores already written to Langfuse are the
+only record, and every question answers itself with one read:
 
-```json
-{"window_end": "2026-07-23T12:00:00Z", "date": "2026-07-23", "graded_today": 12,
- "graded_ids": ["<last 100 trace ids>"],
- "trend": [{"d": "07-22", "n": 30, "fail": {"incomplete": 3}}]}
-```
-
-- `window_end` is the grading cursor: this fire considers traces starting AFTER it and
-  BEFORE now−20min (observation data lags ~15 min; younger traces may still be
-  growing). No state yet → start from now−90min. After grading, advance `window_end`
-  to the newest start time you covered; if quota cut the batch short, set it to the
-  oldest UNGRADED candidate's start so the next fire resumes exactly there — the
-  cursor is what guarantees no trace is skipped and none is graded twice across fires.
-- `date`/`graded_today` enforce the daily cap; new UTC day resets the count to 0.
-- `graded_ids` (ring of 100) is the cheap dedup; the backstop is
-  `listScores {"limit": 100, "name": ["judge_pass"], "traceId": [<candidate ids>]}` —
-  any id that comes back is already graded.
-- `trend` keeps the last 7 daily rows so the digest can say "up/down vs this week";
-  append today's row as you finish. Keep the whole state under ~2KB — state is
-  bookkeeping only (cursor, counts, ids); observations about WHAT is failing live in
-  the scores themselves, never here.
+- **Graded already?** `listScores {"limit": 100, "name": ["judge_pass"],
+  "traceId": [<candidate ids>]}` — any id that comes back is done. This also makes a
+  quota-truncated batch resume by itself: what wasn't graded is still unscored, so
+  the next fire picks it up.
+- **Daily quota used?** `listScores {"limit": 100, "name": ["judge_pass"],
+  "fromTimestamp": "<today 00:00:00Z>"}` — the number of scores returned is today's
+  count. 50 or more → `report_nothing`, stop.
+- **Freshly-written scores are NOT immediately readable** (the API lags creation by
+  up to a couple of minutes) — never re-query to verify your own writes; a
+  successful createScore response is the confirmation.
 
 ## Workflow per fire
 
-1. Read state. `graded_today` ≥ 50 → save state, `report_nothing`, stop.
+1. Quota check (above). At or over 50 → `report_nothing`, stop.
 2. Per environment named in the goal: `langfuse_find_traces(environment=<env>,
-   minutes_back=<enough to cover since window_end, max 1440>)`.
-3. Keep only real agent turns (names `commander_turn`, `task_run`) inside the window;
-   drop infra traces (`mem0.write`, `session.fold`, no user request), already-graded
-   ids (dedup above), and this grading routine's own runs (a trace whose request is
+   minutes_back=180)`. Ignore traces started in the last 20 minutes — observation
+   data lags ~15 min and young traces may still be growing.
+3. Keep only real agent turns (names `commander_turn`, `task_run`); drop infra
+   traces (`mem0.write`, `session.fold`, no user request), already-graded ids
+   (dedup above), and this grading routine's own runs (a trace whose request is
    this very goal — drop without scoring).
-4. Batch = up to 10 across all envs, oldest first. Empty → save state,
-   `report_nothing`, stop.
+4. Batch = up to 10 across all envs, oldest first. Empty → `report_nothing`, stop.
 5. Per trace: `langfuse_read_trace(trace_id)`, walk the checklist, then write TWO
    scores (shapes verified live):
 
@@ -99,11 +90,10 @@ State is one JSON object you read at the start and save at the end of every fire
    - `environment` is mandatory on both; a score without it lands in `default` and is
      lost to dashboards.
    - Omit `metadata.flags` when no flags are set.
-6. Save state (cursor, counts, trend).
-7. Digest (this reply is what the team reads, ≤15 lines): graded/passed counts per
-   env, failure modes seen, comparison to `trend`, each failed trace as
-   `<mode>: <one-line why> — <url>` (createScore returns the url). No tables of
-   passing traces, no rubric recitation.
+6. Digest (this reply is what the team reads, ≤15 lines): graded/passed counts per
+   env, failure modes seen, each failed trace as `<mode>: <one-line why> — <url>`
+   (createScore returns the url). No tables of passing traces, no rubric recitation,
+   no trend analysis — that is `inspect-trace`'s job on demand.
 
 ## Bounds
 
