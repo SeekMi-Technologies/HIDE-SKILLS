@@ -1,6 +1,6 @@
 ---
 name: grade-traces
-description: Grade agent traces in Langfuse: find recent runs, judge them, write scores, report a digest.
+description: "Grade agent traces in Langfuse: find recent runs, judge them, write scores, report a digest."
 ---
 
 # Grade agent traces
