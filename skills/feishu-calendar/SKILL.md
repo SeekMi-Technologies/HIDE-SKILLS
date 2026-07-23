@@ -17,8 +17,9 @@ offset, e.g. 2026-07-06T18:00:00-07:00):
   (attendees accept user ou_, chat oc_, room omm_ ids; --rrule rfc5545 for recurring)
 
 Booking recipe (follow in order):
-1. Resolve every attendee's open_id (feishu-contacts skill; the [Team directory]
-   block carries Chinese + English names).
+1. Resolve every attendee's open_id (feishu-contacts skill). HARD RULE — the
+   requester is ALWAYS an attendee, even when they only named other people: the
+   event lives on the bot's calendar, so anyone left off cannot see it at all.
 2. Determine each attendee's timezone from the team directory / memory / what the
    user said; if still unknown, ASK rather than assume. Do NOT expect
    ["contact", "+get-user"] to help — as bot it returns only ids, no timezone.

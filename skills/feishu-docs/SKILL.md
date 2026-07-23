@@ -2,7 +2,7 @@
 name: feishu-docs
 description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
 scopes: ["drive:drive", "docx:document"]
-commands: ["drive +search"]
+commands: ["drive +search", "drive +member-add"]
 ---
 Commands (feishu_cli; call read_skill("lark-doc") / ("lark-drive") /
 ("lark-wiki") for the full grammar and any required reference files BEFORE
@@ -13,6 +13,14 @@ composing unfamiliar commands):
 - Read a doc: lark-doc skill's read commands with the doc token from search/URL.
 - Create/edit docs: follow lark-doc's create/patch reference files EXACTLY — blind
   creates produce duplicates.
+- HARD RULE — a bot-created doc is invisible to the requester until you share it, in
+  the SAME turn as the create, before you report back:
+  ["drive", "+member-add", "--token", "<doc_token>", "--type", "docx",
+   "--member-id", "<ou_requester,ou_others>", "--member-type", "openid",
+   "--perm", "full_access"]
+  --type is REQUIRED with a bare token (a full URL infers it); --member-id takes up
+  to 10 comma-separated ids in ONE call. Then put the doc URL in your reply. Never
+  hand over a link the person cannot open and wait to be told.
 
 Permissions are TWO layers — diagnose precisely:
 - Code 99991672 = a missing APP SCOPE: the admin was already DMed a grant link; say
