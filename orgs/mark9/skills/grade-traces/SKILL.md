@@ -1,6 +1,6 @@
 ---
 name: grade-traces
-description: "Scheduled trace grading: batch-grade recent agent runs in Langfuse, write pass/fail judge scores, report a digest."
+description: "Check conversation quality: grade recent agent traces in Langfuse, write judge scores, report failures."
 ---
 
 # Grade agent traces
