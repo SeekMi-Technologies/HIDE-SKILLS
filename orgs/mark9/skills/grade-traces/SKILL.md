@@ -52,8 +52,7 @@ State is one JSON object you read at the start and save at the end of every fire
 ```json
 {"window_end": "2026-07-23T12:00:00Z", "date": "2026-07-23", "graded_today": 12,
  "graded_ids": ["<last 100 trace ids>"],
- "trend": [{"d": "07-22", "n": 30, "fail": {"incomplete": 3}}],
- "watch": ["empty-arg retries on NOTION_* keep recurring"]}
+ "trend": [{"d": "07-22", "n": 30, "fail": {"incomplete": 3}}]}
 ```
 
 - `window_end` is the grading cursor: this fire considers traces starting AFTER it and
@@ -67,9 +66,9 @@ State is one JSON object you read at the start and save at the end of every fire
   `listScores {"limit": 100, "name": ["judge_pass"], "traceId": [<candidate ids>]}` —
   any id that comes back is already graded.
 - `trend` keeps the last 7 daily rows so the digest can say "up/down vs this week";
-  append today's row as you finish. `watch` (≤5 short notes) carries recurring
-  patterns worth re-checking — add one when you see the same failure twice, drop it
-  when it stops appearing. Keep the whole state under ~2KB.
+  append today's row as you finish. Keep the whole state under ~2KB — state is
+  bookkeeping only (cursor, counts, ids); observations about WHAT is failing live in
+  the scores themselves, never here.
 
 ## Workflow per fire
 
@@ -100,11 +99,11 @@ State is one JSON object you read at the start and save at the end of every fire
    - `environment` is mandatory on both; a score without it lands in `default` and is
      lost to dashboards.
    - Omit `metadata.flags` when no flags are set.
-6. Save state (cursor, counts, trend, watch).
+6. Save state (cursor, counts, trend).
 7. Digest (this reply is what the team reads, ≤15 lines): graded/passed counts per
    env, failure modes seen, comparison to `trend`, each failed trace as
-   `<mode>: <one-line why> — <url>` (createScore returns the url), and anything on
-   `watch` that recurred. No tables of passing traces, no rubric recitation.
+   `<mode>: <one-line why> — <url>` (createScore returns the url). No tables of
+   passing traces, no rubric recitation.
 
 ## Bounds
 
