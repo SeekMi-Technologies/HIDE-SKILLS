@@ -6,11 +6,20 @@ commands: ["task +create", "task +update", "task +assign", "task +reminder", "ta
 Commands (grammar verified live against the pinned lark-cli 1.0.63; open_ids come
 from the [Team directory] block — never guessed, never from im +chat-search):
 
+- STEP 0 before EVERY create, including the second one in the same conversation —
+  get the tasklist guid from ["task", "tasklists", "list"]. Reuse the list that is
+  already there; only when the bot has none, create one:
+  ["task", "+tasklist-create", "--name", "<short topic name>", "--member", "<ou_requester>"]
+  Re-run the list rather than trusting memory of an earlier turn — a task created
+  without the guid is the one failure this skill cannot recover from.
 - Create: ["task", "+create", "--summary", "<title>", "--assignee", "<ou_requester>",
-  "--tasklist-id", "<guid>", "--due", "2026-07-30", "--description", "<text>",
-  "--idempotency-key", "<stable-key>"]
-  HARD RULE: always pass --assignee with the requester's open_id (plus anyone they
+  "--tasklist-id", "<guid from STEP 0>", "--due", "2026-07-30",
+  "--description", "<text>", "--idempotency-key", "<stable-key>"]
+  HARD RULE 1: always pass --assignee with the requester's open_id (plus anyone they
   name). A bot-created task with no assignee is INVISIBLE in everyone's task app.
+  HARD RULE 2: always pass --tasklist-id. A task created outside the list is
+  unreadable by the bot afterwards, and the only way back to it is a user login —
+  which is exactly what this skill exists to avoid.
 - Update title/desc/due: ["task", "+update", "--task-id", "<guid>", "--due", "2026-07-27"]
   Members can NOT be updated here (the API rejects members as an update field) — use +assign.
 - Members: ["task", "+assign", "--task-id", "<guid>", "--add", "<ou_a,ou_b>"] (--remove to drop).
@@ -25,20 +34,17 @@ from the [Team directory] block — never guessed, never from im +chat-search):
 The --help ALSO advertises "date:YYYY-MM-DD" and "relative:+2d"; both are rejected at
 runtime by this CLI version ("failed to parse due time"). Do not use them.
 
-Reading tasks back — stay on bot identity:
-- Put every task you create into a bot-owned tasklist, then read from that list:
-  ["task", "+tasklist-create", "--name", "<name>", "--member", "<ou_requester>"] once,
-  then ["task", "tasklists", "tasks", "--tasklist-guid", "<guid>"] to list them.
-  This works as the bot and returns each task's assignee, due and completion state —
-  no user authorization, nothing for the requester to approve.
-- ["task", "tasks", "list"] as bot returns only tasks the BOT is responsible for.
-  Since we assign the human, that list is empty — it is not the way to answer
-  "我的待办".
-- USER-ONLY, so prefer the tasklist route above and only offer feishu_connect_user
-  when the user insists on their personal cross-app view: +search, +get-my-tasks,
-  +get-related-tasks. +search additionally needs a real keyword — a bare time or
-  status filter ("今年以来", "已完成") is not a search query, so it is never a
-  reason to ask someone to authorize.
+Reading tasks back ("我的待办 / 有哪些任务") — ONE way, always bot:
+  ["task", "tasklists", "tasks", "--tasklist-guid", "<guid from STEP 0>"]
+It returns each task's summary, assignee, due and completion state. Filter by
+assignee yourself if the user asked about a specific person.
+
+NEVER offer feishu_connect_user to read tasks. These are user-identity-only and
+must not be reached for: +search, +get-my-tasks, +get-related-tasks. There is no
++list-my-tasks. ["task", "tasks", "list"] as bot lists only what the BOT is
+responsible for — we always assign the human, so it is empty by construction.
+If a task predates STEP 0 and is therefore outside the list, say it is not in the
+list rather than asking anyone to log in.
 
 Traps (each one observed live):
 - +get-task, +delete, +list, +create-reminder do not exist. Deleting is
