@@ -41,5 +41,12 @@ Identity & traps:
   (find a Base by title as the speaker) and department-wide grants.
 - There is NO +base-list. Destructive ops (+record-delete, +table-delete,
   +field-update — it is a full PUT) pause for confirmation; +field-get first.
-- Views, dashboards, forms, workflows, roles: read_skill("lark-base") and its
-  references carry the full grammar.
+- A bot 99991672 with no recovery hint means the resource was never shared with
+  the bot — do not just retry; a `91403` means no access at all, same rule.
+  A user-identity scope error DOES carry a recovery hint — follow it (or offer
+  feishu_connect_user) rather than silently falling back to bot.
+
+For anything not covered above — views, dashboards, forms, workflows, roles,
+advanced permissions, or any command whose behavior surprises you —
+read_skill("lark-base") for the full manual before guessing; it is the source
+of truth this skill was distilled from.

@@ -20,6 +20,12 @@ Commands (grammar verified against the pinned lark-cli; open_ids come from the
   (e.g. due Sunday + "周六晚上提醒我" → --set 1d).
 - Complete / reopen: ["task", "+complete", "--task-id", "<guid>"] / ["task", "+reopen", ...]
 - Read one task: ["task", "tasks", "get", "--task-guid", "<guid>"] — there is NO +get-task.
+- List choice: "我的任务/分配给我" → +get-my-tasks; "与我相关/我关注的" → +get-related-tasks;
+  only use +search when the user gives an actual keyword — a bare time/status filter
+  ("今年以来", "已完成") is NOT a search query.
+- 待办/todo mentioned in the context of a meeting minute (妙记/会议纪要/minute_token) is
+  NOT this domain — that is lark-minutes' `+todo`; do not create a tasklist to hold it.
+- Bot identity cannot add members across tenants (tenant_access_token scope).
 
 Identity:
 - bot (default) handles create/update/assign/reminder/complete — the normal path.
@@ -30,5 +36,8 @@ Traps (each one observed live):
 - +get-task, +delete, +list, +create-reminder do not exist. Deleting is
   ["task", "tasks", "delete", ...] and pauses for the user's confirmation.
 - Values go through flags only — positional arguments are rejected.
-- Tasklists, sections, subtasks, custom fields: read_skill("lark-task") and its
-  references carry the full grammar.
+
+For anything not covered above — tasklists, sections, subtasks, custom fields,
+agent registration, identity/permission-error recovery, or any command whose
+behavior surprises you — read_skill("lark-task") for the full manual before
+guessing; it is the source of truth this skill was distilled from.
