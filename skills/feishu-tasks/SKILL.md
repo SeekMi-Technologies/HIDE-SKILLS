@@ -36,7 +36,9 @@ Reading tasks back — stay on bot identity:
   "我的待办".
 - USER-ONLY, so prefer the tasklist route above and only offer feishu_connect_user
   when the user insists on their personal cross-app view: +search, +get-my-tasks,
-  +get-related-tasks.
+  +get-related-tasks. +search additionally needs a real keyword — a bare time or
+  status filter ("今年以来", "已完成") is not a search query, so it is never a
+  reason to ask someone to authorize.
 
 Traps (each one observed live):
 - +get-task, +delete, +list, +create-reminder do not exist. Deleting is
