@@ -30,7 +30,8 @@ Two modes:
    `listScores {"limit": 100, "name": ["judge_grounding"], "traceId": [<candidate ids>]}`
    — any traceId that comes back is done. Skip this routine's own grading runs: if a
    trace's request turns out to be this grading goal, drop it without scoring.
-4. **Batch.** Up to 10 remaining traces, oldest first.
+4. **Batch.** Up to 10 remaining traces, oldest first. Nothing left to grade → call
+   `report_nothing` and end; the team only hears from you when you graded something.
 5. **Judge.** `langfuse_read_trace(trace_id)` per trace, then apply the rubric. When the
    verdict hinges on what happened next (false_success) or on who someone is
    (wrong_target), gather the extra evidence instead of guessing.
