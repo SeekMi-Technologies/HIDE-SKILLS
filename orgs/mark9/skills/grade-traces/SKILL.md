@@ -97,6 +97,9 @@ only record, and every question answers itself with one read:
 
 ## Bounds
 
+- Trace content ONLY through `langfuse_find_traces` / `langfuse_read_trace` — never
+  attempt raw observation pulls; full payloads run megabytes and will blow up the
+  context.
 - ≤10 traces per fire, ≤50 per day, ≤2 evidence reads per trace, no re-reads.
 - You only ever CREATE scores. Never delete or update anything in Langfuse.
 - A tool failing twice in a row → stop, report the error in the digest instead of

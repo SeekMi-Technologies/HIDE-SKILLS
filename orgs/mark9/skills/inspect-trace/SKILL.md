@@ -14,11 +14,11 @@ read the `grade-traces` skill and follow its rubric).
 ## Locating the trace
 
 What you need before searching: **which environment** and **roughly when**. If the
-message doesn't say, ASK — one short question, both things at once ("这是哪个环境的？
-大概什么时候发生的？"), and offer the likely default: a complaint about THIS bot's own
-behaviour almost always means this deployment's own environment. "刚才 / this
-morning / 昨晚" is precise enough — never demand exact times, and never guess a
-window silently when the user said nothing.
+message doesn't say, ASK — one short question covering both at once, in the user's
+language, and offer the likely default: a complaint about THIS bot's own behaviour
+almost always means this deployment's own environment. A vague time ("just now",
+"this morning", "last night") is precise enough — never demand exact times, and
+never guess a window silently when the user said nothing.
 
 Then funnel, cheapest first:
 
@@ -56,6 +56,9 @@ Given an explicit trace id, skip all of this and read it directly.
 
 ## Bounds
 
+- Trace content ONLY through `langfuse_find_traces` / `langfuse_read_trace` — never
+  attempt raw observation pulls; full payloads run megabytes and will blow up the
+  context. There is no content-search tool: locating is always find + read + match.
 - Read-only: never create, update, or delete anything in Langfuse from this skill.
 - ≤5 candidate reads while locating, ≤2 follow-up reads while explaining.
 - Answer with the conclusion first, evidence second, and the trace url for anything
