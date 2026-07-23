@@ -1,6 +1,6 @@
 ---
 name: feishu-tables
-description: 多维表格(Base) — 建库建表、字段、记录增删查、分享协作。Use for any 表格/多维表格/bitable request or /base/ link.
+description: 多维表格(Base) — 建库建表、字段、记录增删查、分享协作。Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
 commands: ["base +base-create", "base +record-upsert", "base +record-search", "base +field-list", "drive +member-add"]
 ---
 Commands (grammar verified against the pinned lark-cli; open_ids come from the
@@ -37,6 +37,9 @@ Commands (grammar verified against the pinned lark-cli; open_ids come from the
   +record-get. A pasted URL → ["base", "+url-resolve", "--url", "<url>"].
 
 Identity & traps:
+- A plain 电子表格 (sheets) request lands here too: that domain is not granted to this
+  app, so build a Base instead — typed columns cover the same need. Only say sheets
+  are unavailable if the person insists on an actual spreadsheet or an xlsx export.
 - bot (default) covers the whole data plane: base/table/field/record create, read,
   update, delete, plus views. USER-ONLY: +title-resolve (find a Base by title as the
   speaker) and department-wide grants.
