@@ -13,27 +13,37 @@ read the `grade-traces` skill and follow its rubric).
 
 ## Locating the trace
 
-What you need before searching: **which environment** and **roughly when**. If the
-message doesn't say, ASK — one short question covering both at once, in the user's
-language, and offer the likely default: a complaint about THIS bot's own behaviour
-almost always means this deployment's own environment. A vague time ("just now",
-"this morning", "last night") is precise enough — never demand exact times, and
-never guess a window silently when the user said nothing.
+**GATE — do this before any tool call.** You need **which environment** and
+**roughly when**. If the message states neither, your ENTIRE reply is one short
+question asking both at once (in the user's language), offering the likely
+default: a complaint about THIS bot's own behaviour almost always means this
+deployment's own environment. A vague time ("just now", "this morning", "last
+night") is enough — never demand exact times. Do not start searching on a guess.
 
 Then funnel, cheapest first:
 
-1. `langfuse_find_traces(environment=<env>, minutes_back=<window covering the stated
-   time>)` — candidates are the real agent turns (`commander_turn`, `task_run`)
-   near the stated time.
+1. `langfuse_find_traces(environment=<env>, minutes_back=<window start>,
+   until_minutes_back=<window end>)` — aim BOTH bounds at the stated time (e.g.
+   "yesterday evening" ≈ 1560/1320), don't page a huge lookback. Candidates are
+   the real agent turns (`commander_turn`, `task_run`) near the stated time.
+   If the result says the window was truncated, shrink the window and retry —
+   a truncated window has NOT searched the whole period.
 2. `langfuse_read_trace` the closest candidates and match the pasted fragment
    against the user request and final reply in each transcript. The paste is often
    partial, reformatted, or quoted from Feishu — match meaning, not exact bytes.
-3. Read at most 5 candidates. No match → tell the user what window you searched and
-   ask them to narrow (a longer paste, a closer time, a different env) — do NOT
-   silently widen the window and keep burning reads.
+3. Read at most 5 candidates. No match → say plainly that you could not locate the
+   trace in that window and ask the user to narrow (a longer paste, a closer time,
+   a different env) — do NOT silently widen the window and keep burning reads.
 4. Two plausible matches → show both one-liners with start times and ask which.
 
 Given an explicit trace id, skip all of this and read it directly.
+
+**HARD RULE — no verdict without the trace.** Task records, memory, and prior
+scores are context for FINDING the trace, never a substitute for reading it. If
+you have not read the trace that actually produced the pasted text, you do not
+know what happened — say you couldn't locate it. Declaring a reply "fabricated"
+or "failed" based on a different run of a similar task is a false accusation and
+the worst possible output of this skill.
 
 ## Explaining
 
