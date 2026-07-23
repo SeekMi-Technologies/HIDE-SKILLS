@@ -6,12 +6,14 @@ commands: ["contact +get-user", "im +chat-search"]
 ---
 Resolution ladder — stop at the first hit:
 1. [Team directory] context block — one line per member:
-   `- <name> — role: <role>, open_id: <ou_xxx>`. The name is whatever the workspace
-   stores, usually Chinese ONLY. So a romanized request ("ziyue", "yucheng") has
-   nothing to string-match against and you must transliterate — that is a GUESS.
-   Match on the full given name, syllable by syllable (子越 = ziyue, 宇程 = yucheng);
-   a shared surname or a vaguely similar sound is NOT a match. If two people could
-   plausibly be meant, or none clearly is, ASK — naming the candidates.
+   `- <name> — role: <role>, open_id: <ou_xxx>`. Names are stored as the workspace
+   has them, usually Chinese only, so a romanized request ("ziyue") matches nothing
+   literally.
+   DO THE LOOKUP BEFORE YOU DECIDE. Read the block and quote the line you matched
+   before using its open_id — deciding who someone is while restating the request,
+   then never re-checking, is how "让 ziyue 讲" became a task for 朱宇程 with the
+   directory sitting in the same prompt. Two candidates, or none clearly right → ASK,
+   naming them.
 2. search_memory("<name> open_id") — the org memory carries an identity map.
 3. Verify/enrich a known id: ["contact", "+get-user", "--user-id", "<ou_xxx>"]
    (bot-capable, read; --user-id-type open_id|union_id|user_id). If it returns 200
