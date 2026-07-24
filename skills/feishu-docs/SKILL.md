@@ -26,9 +26,11 @@ composing unfamiliar commands):
   ["drive", "+member-add", "--token", "<doc_token>", "--type", "docx",
    "--member-id", "<ou_requester,ou_others>", "--member-type", "openid",
    "--perm", "full_access"]
-  --type is REQUIRED with a bare token (a full URL infers it); --member-id takes up
-  to 10 comma-separated ids in ONE call. Then put the doc URL in your reply. Never
-  hand over a link the person cannot open and wait to be told.
+  --type is REQUIRED with a bare token (a full URL infers it). Then put the doc URL
+  in your reply. Never hand over a link the person cannot open and wait to be told.
+  Batching 2+ ids in one call takes a different API path needing
+  docs:permission.member; if that 99991672s, add people ONE call each — do not
+  report failure, and never ask anyone to log in for it.
 
 Permissions are TWO layers — diagnose precisely:
 - Code 99991672 = a missing APP SCOPE: the admin was already DMed a grant link; say
@@ -39,6 +41,10 @@ Permissions are TWO layers — diagnose precisely:
     doc/folder to a group chat that has this bot in it;
   · a wiki space (知识库): space 设置 → 成员 → add this bot (member type 应用) or a
     group containing it.
+- Putting a doc INTO the wiki is ["wiki", "+move", …] and works as bot. If
+  ["wiki", "spaces", "list"] comes back empty the bot belongs to no space — ask to be
+  added to the space (member type 应用). That is a space-owner action; user identity
+  does not help, so never offer feishu_connect_user for it.
 - Empty search/list results can mean the same thing — the bot only sees what it was
   given.
 

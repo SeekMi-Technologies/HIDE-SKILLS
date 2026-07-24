@@ -20,9 +20,11 @@ Commands (grammar verified against the pinned lark-cli; open_ids come from the
 - HARD RULE — a bot-created Base is invisible to the requester until shared:
   ["drive", "+member-add", "--token", "<base_token>", "--type", "bitable",
    "--member-id", "<ou_a,ou_b>", "--member-type", "openid", "--perm", "edit"]
-  --type bitable is REQUIRED with a bare token (a full URL infers it); --member-id
-  takes up to 10 comma-separated ids in ONE call. Then put the Base URL in your
-  reply. If +base-create output carries permission_grant, report what it says.
+  --type bitable is REQUIRED with a bare token (a full URL infers it). Then put the
+  Base URL in your reply. If +base-create output carries permission_grant, report
+  what it says. Batching 2+ ids in one call takes a different API path needing
+  docs:permission.member; if that 99991672s, add people ONE call each — do not
+  report failure, and never ask anyone to log in for it.
 
 - Records: ["base", "+record-upsert", "--base-token", "<tok>", "--table-id", "<表名|tbl_>",
    "--json", "{\"标题\":\"Alice\",\"状态\":\"Todo\"}"] — a TOP-LEVEL field map, never
