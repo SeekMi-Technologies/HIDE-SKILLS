@@ -10,11 +10,14 @@ composing unfamiliar commands):
 
 - Org-wide file search (bot-capable): ["drive", "+search", "--query", "<keywords>"]
   (docs +search is the user-identity-only variant — prefer drive +search as bot).
-  search_memory is fine for RECALLING a doc you already know about — it is faster
-  and usually right. But it only knows what you did; it is not the file store. So a
-  NEGATIVE answer ("没写过 / 没找到 / 我们没有") must come from Drive —
-  ["drive", "+search", …] or ["drive", "files", "list"] — before you say it. A wrong
-  "没找到" is indistinguishable from a right one, and the person cannot catch it.
+  ANY question about which documents exist — "有哪些文档 / 找找看 / 有没有写过 /
+  我们没有吗" — is answered from Drive, with +search or ["drive","files","list"].
+  Reach for the CLI first and treat search_memory as a hint that still needs
+  confirming, never as the answer. Memory only knows what you did and blurs a doc
+  together with the request that produced it: asked what it had created, the bot
+  listed four documents from memory when Drive held three, inventing one by counting
+  the same doc twice. Both an invented item and a wrong "没找到" look exactly like
+  correct answers, so the person cannot catch either.
 - Read a doc: lark-doc skill's read commands with the doc token from search/URL.
 - Create/edit docs: follow lark-doc's create/patch reference files EXACTLY — blind
   creates produce duplicates.
