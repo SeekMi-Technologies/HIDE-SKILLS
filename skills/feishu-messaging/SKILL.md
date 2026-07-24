@@ -16,6 +16,14 @@ Send with feishu_cli as the bot (add --dry-run to any command to preview it firs
 - Always add --idempotency-key <a-stable-key-you-derive-from-the-task> when a retry is
   conceivable — it makes a duplicate send impossible.
 
+Message content is PLAIN text / Feishu markdown — an IM message, NOT a document:
+- Write &, <, > literally. NEVER HTML-escape them: "R&D" stays "R&D", never "R&amp;D".
+  The &amp;/&lt; escaping and <cite>/<callout> tags belong to docs (DocxXML) only; using
+  them here renders as literal garbage in the chat.
+- @-mention a person: <at user_id="ou_xxx"></at> (underscore user_id; an optional display
+  name may go between the tags). @everyone: <at user_id="all"></at>. Use this EXACT form —
+  not the DocxXML <cite type="user"> tag, and not a hyphenated user-id.
+
 Resolving targets:
 - A person's open_id (ou_…) comes from the [Team directory] block; if they are not
   listed, resolve the name with the feishu-contacts skill — never guess an id.

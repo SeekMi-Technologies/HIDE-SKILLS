@@ -21,6 +21,11 @@ Do NOT switch identity for any of these — they are not user-identity problems:
   DMed a grant link; ask them to grant, never send the user a login);
 - "no permission" on a specific doc/folder/space (it was never shared with the bot —
   ask for it to be shared).
+- an "only supports: user" error on a command a curated skill told you NOT to use. The
+  domain skill is authoritative: feishu-tasks reads tasks as bot via `task tasklists
+  tasks` and forbids +get-my-tasks/+get-related-tasks/+search. Hitting the user-only
+  error on one of those means you picked the wrong command — go back to the skill's bot
+  command; do NOT switch identity or send a login link.
 Before reaching for user identity at all, use the matching curated skill's bot-capable
 path: org-wide doc search is `drive +search` as bot (feishu-docs); names resolve from
 the [Team directory] (feishu-contacts); tasks read as bot (feishu-tasks).

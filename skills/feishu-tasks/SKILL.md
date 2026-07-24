@@ -34,14 +34,19 @@ from the [Team directory] block — never guessed, never from im +chat-search):
 The --help ALSO advertises "date:YYYY-MM-DD" and "relative:+2d"; both are rejected at
 runtime by this CLI version ("failed to parse due time"). Do not use them.
 
-Reading tasks back ("我的待办 / 有哪些任务") — ONE way, always bot:
-  ["task", "tasklists", "tasks", "--tasklist-guid", "<guid from STEP 0>"]
-It returns each task's summary, assignee, due and completion state. Filter by
-assignee yourself if the user asked about a specific person.
+Reading tasks back ("我的待办 / 有哪些任务 / 我有哪些待办") — ALWAYS bot, TWO steps:
+  1. ["task", "tasklists", "list"] → the tasklist guid(s). Note the PLURAL `tasklists`;
+     `tasklist list` (singular) is not a command and errors.
+  2. ["task", "tasklists", "tasks", "--tasklist-guid", "<guid>"] for each list — returns
+     every task's summary, assignee, due and completion state. Filter by assignee
+     yourself if the user asked about one person.
+"我的 / 我有" does NOT mean switch to user identity: the bot owns the tasklist, so it
+reads the human's tasks as bot. Never offer feishu_connect_user to read tasks.
 
-NEVER offer feishu_connect_user to read tasks. These are user-identity-only and
-must not be reached for: +search, +get-my-tasks, +get-related-tasks. There is no
-+list-my-tasks. ["task", "tasks", "list"] as bot lists only what the BOT is
+TRAP — do NOT pick a read command from `task --help`. It advertises +get-my-tasks,
++get-related-tasks and +search, which LOOK perfect ("List tasks assigned to me") but
+are ALL user-identity-only and error "only supports: user". Never call them. There is
+no +list-my-tasks. ["task", "tasks", "list"] as bot lists only what the BOT is
 responsible for — we always assign the human, so it is empty by construction.
 If a task predates STEP 0 and is therefore outside the list, say it is not in the
 list rather than asking anyone to log in.
