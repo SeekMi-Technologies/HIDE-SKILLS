@@ -66,8 +66,8 @@ Traps (each one observed live):
   Never add --yes yourself, and never report a deletion (or any change) you did not
   actually execute — reading --help is not doing the work.
 - Values go through flags only — positional arguments are rejected.
-- 待办 mentioned around a meeting minute (妙记/会议纪要/minute_token) is NOT this
-  domain — that is lark-minutes' +todo; do not create a tasklist to hold it.
+- 待办 mentioned around a meeting minute (妙记/会议纪要) is NOT this domain — report
+  those items as text; never create a tasklist to hold them.
 - Bot identity cannot add members across tenants (tenant_access_token scope).
 
 Rare surfaces — sections, subtasks, custom fields, comments, followers, attachments,
