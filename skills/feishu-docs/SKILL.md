@@ -2,7 +2,7 @@
 name: feishu-docs
 description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
 scopes: ["drive:drive", "docx:document"]
-commands: ["drive +search"]
+commands: ["drive +search", "drive +member-add"]
 ---
 Commands (feishu_cli; call read_skill("lark-doc") / ("lark-drive") /
 ("lark-wiki") for the full grammar and any required reference files BEFORE
@@ -10,9 +10,38 @@ composing unfamiliar commands):
 
 - Org-wide file search (bot-capable): ["drive", "+search", "--query", "<keywords>"]
   (docs +search is the user-identity-only variant — prefer drive +search as bot).
+  ANY question about which documents exist — "有哪些文档 / 找找看 / 有没有写过 /
+  我们没有吗" — is answered from Drive, with +search or ["drive","files","list"].
+  Reach for the CLI first and treat search_memory as a hint that still needs
+  confirming, never as the answer. Memory only knows what you did and blurs a doc
+  together with the request that produced it: asked what it had created, the bot
+  listed four documents from memory when Drive held three, inventing one by counting
+  the same doc twice. Both an invented item and a wrong "没找到" look exactly like
+  correct answers, so the person cannot catch either.
 - Read a doc: lark-doc skill's read commands with the doc token from search/URL.
 - Create/edit docs: follow lark-doc's create/patch reference files EXACTLY — blind
   creates produce duplicates.
+- ALWAYS write DocxXML, which is the default — never pass --doc-format markdown.
+  DocxXML is the native representation (+fetch returns it, so fetch → edit → write
+  round-trips losslessly) and reaches blocks Markdown has no syntax for, e.g.
+  <callout emoji="🤝">. Markdown is a lossy one-way import; switching formats
+  mid-document is how a doc ends up part rendered, part literal.
+  Shape: <title>…</title><h2>…</h2><p>…</p><blockquote><p><b>…</b> …</p></blockquote>
+  <ul><li>…</li></ul><hr/>. Read lark-doc's references/lark-doc-xml.md before using
+  anything richer.
+- HARD RULE — a bot-created doc is invisible to the requester until you share it, in
+  the SAME turn as the create, before you report back:
+  ["drive", "+member-add", "--token", "<doc_token>", "--type", "docx",
+   "--member-id", "<ou_requester,ou_others>", "--member-type", "openid",
+   "--perm", "full_access"]
+  --type is REQUIRED with a bare token (a full URL infers it). Then put the doc URL
+  in your reply. Never hand over a link the person cannot open and wait to be told.
+  Batching 2+ ids in one call takes a different API path needing
+  docs:permission.member; if that 99991672s, repeat +member-add ONCE PER PERSON —
+  stay on +member-add, do not drop to ["drive","permission.members","create"], and
+  never ask anyone to log in for it.
+  Never add --yes yourself. The CLI marks this high-risk-write and its reference doc
+  says so loudly; that is handled for you, it is not a cue to pass the flag or stop.
 
 Permissions are TWO layers — diagnose precisely:
 - Code 99991672 = a missing APP SCOPE: the admin was already DMed a grant link; say
@@ -23,6 +52,10 @@ Permissions are TWO layers — diagnose precisely:
     doc/folder to a group chat that has this bot in it;
   · a wiki space (知识库): space 设置 → 成员 → add this bot (member type 应用) or a
     group containing it.
+- Putting a doc INTO the wiki is ["wiki", "+move", …] and works as bot. If
+  ["wiki", "spaces", "list"] comes back empty the bot belongs to no space — ask to be
+  added to the space (member type 应用). That is a space-owner action; user identity
+  does not help, so never offer feishu_connect_user for it.
 - Empty search/list results can mean the same thing — the bot only sees what it was
   given.
 
