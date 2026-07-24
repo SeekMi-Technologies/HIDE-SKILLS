@@ -8,8 +8,14 @@ before composing it — `["base", "+record-history-list", "--help"]`.
 
 `+record-search` and `+record-list` both take:
 - `--view-id <名称|vew_>` — read through an existing view's filter/sort.
-- `--filter-json '{"logic":"and","conditions":[{"field":"阶段","operator":"is","value":["已成交"]}]}'`
-  — overrides the view's filters.
+- `--filter-json '{"logic":"and","conditions":[["阶段","intersects",["已成交"]]]}'` —
+  overrides the view's filters. Each condition is a TUPLE `[field, operator, value]`
+  (`{"field":…,"operator":…}` objects are rejected: "Expected array, received object").
+  Value by field type: text → `"发布"` with `intersects`; number → `3.5` with `>=`;
+  select/multi-select → `["Doing","Blocked"]`; user/created_by → `[{"id":"ou_xxx"}]`;
+  group_chat → `[{"id":"oc_xxx"}]`; link → `[{"id":"rec_xxx"}]`; `empty` / `non_empty`
+  take a 2-item tuple. Note `+record-search` still requires its own `--keyword`, so a
+  pure filter read goes through `+record-list`.
 - `--sort-json '[{"field":"金额","desc":true}]'` — order is priority, max 10.
 - `--field-id <字段名>` (repeatable) — project only the columns you need.
 - `--limit` (1–200, default 10) + `--offset` for paging; the Meta line reports `has_more`.
@@ -28,6 +34,12 @@ before composing it — `["base", "+record-history-list", "--help"]`.
 ```
 `dimensions` and `measures` cannot both be empty. Use `tableId` instead of `tableName`
 when an id is at hand. Results are `{alias: {value: …}}` rows — no record ids.
+
+`filters` here is its own dialect, NOT the tuple form `--filter-json` takes: conditions are
+objects `{field_name, operator, value}`, operators are `is / isNot / contains /
+doesNotContain / isEmpty / isNotEmpty` (plus numeric/date comparisons), and a person or
+chat value is a PLAIN STRING id array — `{"field_name":"负责人","operator":"is","value":["ou_xxx"]}`.
+Passing `[{"id":…}]` here fails with 800004006 "failed to parse lite filter".
 
 ## Batch update
 

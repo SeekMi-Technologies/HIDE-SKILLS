@@ -51,8 +51,23 @@ WRITE:
   objects is rejected. `null` empties a cell. Max 200 rows per call.
 - Cell values: text "x"; number 12.5; select "已成交" (write the plain string even though
   reads return `["已成交"]`); multi-select ["A","B"]; datetime "2026-07-28 10:00:00";
-  checkbox true; user/link [{"id":"ou_xxx"}] / [{"id":"rec_xxx"}] — resolve ids first,
-  never guess them.
+  checkbox true; user/link [{"id":"ou_xxx"}] / [{"id":"rec_xxx"}] — resolve every id from
+  the [Team directory] first; a wrong one fails loudly with 800030405 not_found.
+
+WHOSE ROWS ARE THESE — filter on a person field, never read the table and eyeball it.
+A CRM-style table usually carries an owner column (`{"name":"负责人","type":"user"}`), and
+"我的客户 / 我要跟进谁" means the SPEAKER's rows. The two commands take DIFFERENT filter
+dialects — this is the easiest thing here to get wrong:
+- ["base", "+record-list", …, "--filter-json",
+   "{\"logic\":\"and\",\"conditions\":[[\"负责人\",\"intersects\",[{\"id\":\"ou_xxx\"}]]]}"]
+  Conditions are TUPLES `[field, operator, value]`; a person value is an OBJECT array.
+  Operators: == != > >= < <= intersects disjoint empty non_empty. (`+record-search` still
+  wants its `--keyword`; use `+record-list` for a pure filter.)
+- Inside `+data-query`'s `filters`, the same person is a PLAIN STRING id:
+  `{"field_name":"负责人","operator":"is","value":["ou_xxx"]}` — objects there fail with
+  800004006 "failed to parse lite filter".
+Reading someone else's rows is a real request ("老王手上有哪些客户") — filter by THEIR
+open_id, and only when the person asking is entitled to it.
 
 COUNT / SUM / GROUP — use the server, never pull the whole table and add it up yourself:
   ["base", "+data-query", "--base-token", "<tok>", "--dsl",
