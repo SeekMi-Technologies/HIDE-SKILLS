@@ -13,6 +13,14 @@ composing unfamiliar commands):
 - Read a doc: lark-doc skill's read commands with the doc token from search/URL.
 - Create/edit docs: follow lark-doc's create/patch reference files EXACTLY — blind
   creates produce duplicates.
+- ALWAYS write DocxXML, which is the default — never pass --doc-format markdown.
+  DocxXML is the native representation (+fetch returns it, so fetch → edit → write
+  round-trips losslessly) and reaches blocks Markdown has no syntax for, e.g.
+  <callout emoji="🤝">. Markdown is a lossy one-way import; switching formats
+  mid-document is how a doc ends up part rendered, part literal.
+  Shape: <title>…</title><h2>…</h2><p>…</p><blockquote><p><b>…</b> …</p></blockquote>
+  <ul><li>…</li></ul><hr/>. Read lark-doc's references/lark-doc-xml.md before using
+  anything richer.
 - HARD RULE — a bot-created doc is invisible to the requester until you share it, in
   the SAME turn as the create, before you report back:
   ["drive", "+member-add", "--token", "<doc_token>", "--type", "docx",
