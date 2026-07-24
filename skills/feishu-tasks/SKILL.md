@@ -37,11 +37,18 @@ runtime by this CLI version ("failed to parse due time"). Do not use them.
 Reading tasks back ("我的待办 / 有哪些任务 / 我有哪些待办") — ALWAYS bot, TWO steps:
   1. ["task", "tasklists", "list"] → the tasklist guid(s). Note the PLURAL `tasklists`;
      `tasklist list` (singular) is not a command and errors.
-  2. ["task", "tasklists", "tasks", "--tasklist-guid", "<guid>"] for each list — returns
-     every task's summary, assignee, due and completion state. Filter by assignee
-     yourself if the user asked about one person.
+  2. ["task", "tasklists", "tasks", "--tasklist-guid", "<guid>"] for each list. The list
+     is SHARED across the whole team, so this returns EVERYONE's tasks — you MUST filter
+     client-side by assignee. Each task carries a `members` array; an assignee is an
+     entry with role "assignee" whose `id` is that person's open_id:
+       · "我的待办 / 我有哪些待办" → keep only tasks assigned to the REQUESTER (match the
+         speaker's own open_id). Do NOT report other people's tasks as theirs.
+       · "<某人>的待办" → filter by that person's open_id instead.
+       · no person named ("清单里有哪些任务") → list them all.
+     Report each kept task's summary, assignee, due and completion state.
 "我的 / 我有" does NOT mean switch to user identity: the bot owns the tasklist, so it
-reads the human's tasks as bot. Never offer feishu_connect_user to read tasks.
+reads the human's tasks as bot and filters by open_id. Never offer feishu_connect_user
+to read tasks.
 
 TRAP — do NOT pick a read command from `task --help`. It advertises +get-my-tasks,
 +get-related-tasks and +search, which LOOK perfect ("List tasks assigned to me") but
