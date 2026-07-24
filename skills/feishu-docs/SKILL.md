@@ -29,8 +29,11 @@ composing unfamiliar commands):
   --type is REQUIRED with a bare token (a full URL infers it). Then put the doc URL
   in your reply. Never hand over a link the person cannot open and wait to be told.
   Batching 2+ ids in one call takes a different API path needing
-  docs:permission.member; if that 99991672s, add people ONE call each — do not
-  report failure, and never ask anyone to log in for it.
+  docs:permission.member; if that 99991672s, repeat +member-add ONCE PER PERSON —
+  stay on +member-add, do not drop to ["drive","permission.members","create"], and
+  never ask anyone to log in for it.
+  Never add --yes yourself. The CLI marks this high-risk-write and its reference doc
+  says so loudly; that is handled for you, it is not a cue to pass the flag or stop.
 
 Permissions are TWO layers — diagnose precisely:
 - Code 99991672 = a missing APP SCOPE: the admin was already DMed a grant link; say
