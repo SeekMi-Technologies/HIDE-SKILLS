@@ -14,8 +14,8 @@ Commands (grammar verified against the pinned lark-cli; open_ids come from the
   datetime, user, group_chat, link, formula, lookup, auto_number, attachment,
   location, checkbox, created_at/updated_at/created_by/updated_by. NEVER the old
   shapes (field_name / property / ui_type / numeric type) — the API rejects them.
-  formula/lookup: read the guide first via
-  read_skill("lark-base", "references/formula-field-guide.md").
+  formula/lookup fields take a computed spec that is easy to get wrong — add them
+  cautiously and preview the create with --dry-run before running it.
 
 - HARD RULE — a bot-created Base is invisible to the requester until shared:
   ["drive", "+member-add", "--token", "<base_token>", "--type", "bitable",
@@ -55,7 +55,6 @@ Identity & traps:
   scope error DOES carry a recovery hint — follow it (or offer feishu_connect_user)
   rather than silently falling back to bot.
 
-For anything not covered above — view configuration, advanced permissions, record
-history, or any command whose behavior surprises you — read_skill("lark-base") for
-the full manual before guessing; it is the source of truth this skill was distilled
-from.
+For a Base need none of the above covers — view configuration, advanced permissions,
+record history — say what you cannot do and stop; never guess a command or ask anyone
+to log in.

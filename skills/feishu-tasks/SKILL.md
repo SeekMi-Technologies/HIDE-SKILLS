@@ -58,7 +58,7 @@ Traps (each one observed live):
   domain — that is lark-minutes' +todo; do not create a tasklist to hold it.
 - Bot identity cannot add members across tenants (tenant_access_token scope).
 
-For anything not covered above — sections, subtasks, custom fields, agent
-registration, identity/permission-error recovery, or any command whose behavior
-surprises you — read_skill("lark-task") for the full manual before guessing; it is
-the source of truth this skill was distilled from.
+Rare surfaces — sections, subtasks, custom fields, comments, followers, attachments,
+task hierarchy — are in references/task-advanced.md; read it only when a request needs
+one. For a task need neither here nor there covers, say what you cannot do and stop —
+never guess a command or ask anyone to log in.
