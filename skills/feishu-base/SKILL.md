@@ -9,8 +9,12 @@ through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
 
 FIND THE BASE FIRST — never invent a token:
 - A pasted link ⇒ ["base", "+url-resolve", "--url", "<url>"] → `base_token`.
-- Only a title and no link ⇒ ASK which Base. (`+title-resolve` is user-identity-only;
-  never call it and never offer a login for it.)
+- "有哪些多维表格 / 我们建过什么表" ⇒ ["drive", "files", "list"] and keep the
+  `type: "bitable"` entries — their `token` IS the base_token. This is a Drive question,
+  not a Base one (`base` has no list command), and it answers what the BOT can see, so
+  say that rather than claiming it is everything.
+- A title you can match against that list ⇒ use its token. Still ambiguous ⇒ ASK.
+  (`+title-resolve` is user-identity-only; never call it, never offer a login for it.)
 - Nothing exists yet ⇒ create one (below).
 
 CREATE — one shot, whole schema (adding fields later is a separate write per column):
