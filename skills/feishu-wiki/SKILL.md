@@ -1,8 +1,8 @@
 ---
 name: feishu-wiki
 description: 知识库(Wiki) — 把文档搬进知识库、在里面建页面、整理目录树、读里面的内容。Use for any 知识库/知识空间/wiki request or a /wiki/ link. Page CONTENT (writing and editing a doc's body) belongs to feishu-docs; this skill owns the space and its node tree.
-scopes: ["wiki:wiki"]
-commands: ["wiki +space-list", "wiki +node-list", "wiki +node-get", "wiki +node-create", "wiki +move", "wiki +member-list"]
+scopes: ["wiki:wiki", "search:docs:read"]
+commands: ["wiki +space-list", "wiki +node-list", "wiki +node-get", "wiki +node-create", "wiki +move", "wiki +member-list", "drive +search"]
 ---
 Every command runs as the BOT and was verified live against this CLI. Values go through
 flags only.
@@ -14,6 +14,17 @@ START HERE — the bot only sees spaces it belongs to:
   option, so someone must add A GROUP CHAT THIS BOT IS IN — 知识库设置 → 成员设置 →
   角色与权限 → 添加成员 → search the group name. The bot inherits the space through the
   group. Never tell anyone to add the bot itself, and never offer a login for it.
+
+FIND SOMETHING IN THE SPACE — the default for "知识库里有没有讲 X 的 / 关于 X 我们写过什么".
+Full-text, not just titles:
+  ["drive", "+search", "--query", "<keywords>", "--space-ids", "<space_id>"]
+  Results come back as `entity_type: WIKI` with the node's `token` (a node_token, ready
+  for +node-get or docs +fetch) and `summary_highlighted` — the matching sentence. Quote
+  that snippet and read the page before answering.
+  ALWAYS pass --space-ids for a knowledge-base question. Without it the search spans all
+  of Drive and returns cross-tenant template docs that look plausible and are not theirs.
+  It reaches nodes nested anywhere in the tree, which a top-level +node-list does not —
+  so search first, browse second.
 
 TWO TOKENS PER NODE — the single most expensive thing to get wrong. ["wiki", "+node-list",
 "--space-id", "<id>"] returns, for every node:

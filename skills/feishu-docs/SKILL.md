@@ -10,6 +10,8 @@ for a doc task. Values go through flags only.
 WHICH DOCUMENTS EXIST — always a Drive question, never memory:
 - "有哪些文档 / 都创建了什么 / 有没有写过 / 我们没有吗" ⇒ ["drive", "files", "list"].
 - Keyword search ("找找关于 X 的文档") ⇒ ["drive", "+search", "--query", "<keywords>"].
+  Drop any hit whose `result_meta.is_cross_tenant` is true — Feishu mixes in its own
+  template library (owner 云文档助手), and those read exactly like the company's own docs.
 Reach for the CLI first and treat search_memory as a hint that still needs confirming,
 never as the answer: memory only knows what you did and blurs a doc together with the
 request that produced it — asked what it had created, the bot once listed four docs from
