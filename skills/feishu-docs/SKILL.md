@@ -1,8 +1,8 @@
 ---
 name: feishu-docs
-description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
+description: Search, read, or create Feishu docs / 云文档 / drive 文件. Use for any request about a document's CONTENT — writing one, finding one, reading one, sharing one. The 知识库 space and its node tree are feishu-wiki.
 scopes: ["drive:drive", "docx:document"]
-commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update", "wiki +move"]
+commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update"]
 ---
 The Feishu document domain runs entirely as the bot — never offer feishu_connect_user
 for a doc task. Values go through flags only.
@@ -10,6 +10,8 @@ for a doc task. Values go through flags only.
 WHICH DOCUMENTS EXIST — always a Drive question, never memory:
 - "有哪些文档 / 都创建了什么 / 有没有写过 / 我们没有吗" ⇒ ["drive", "files", "list"].
 - Keyword search ("找找关于 X 的文档") ⇒ ["drive", "+search", "--query", "<keywords>"].
+  Drop any hit whose `result_meta.is_cross_tenant` is true — Feishu mixes in its own
+  template library (owner 云文档助手), and those read exactly like the company's own docs.
 Reach for the CLI first and treat search_memory as a hint that still needs confirming,
 never as the answer: memory only knows what you did and blurs a doc together with the
 request that produced it — asked what it had created, the bot once listed four docs from
@@ -57,12 +59,10 @@ Permissions are TWO layers — diagnose precisely:
   resource was never shared with the bot:
   · a doc: open it → "…" → 更多 → 添加文档应用 → pick this bot; or share the doc/folder
     to a group chat this bot is in;
-  · a wiki space (知识库): space 设置 → 成员 → add this bot (member type 应用) or a
-    group containing it.
-- Putting a doc INTO the wiki is ["wiki", "+move", …] and works as bot. If
-  ["wiki", "spaces", "list"] is empty the bot belongs to no space — ask to be added
-  (member type 应用). That is a space-owner action; user identity does not help, so
-  never offer a login for it.
+  · a wiki space (知识库): read the feishu-wiki skill — getting the bot into a space has
+    one correct answer and it is not the one people guess.
+- The 知识库 itself — putting a doc into it, the node tree, who can see a space — is
+  feishu-wiki. This skill stops at document content.
 - Empty search/list results can mean the same thing — the bot only sees what it was given.
 
 Meeting minutes (智能纪要 / 妙记) and forwarded docs:
