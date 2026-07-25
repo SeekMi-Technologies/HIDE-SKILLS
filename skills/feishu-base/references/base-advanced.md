@@ -2,7 +2,7 @@
 
 Read this only when a request needs something the main skill does not cover. Everything
 here runs as the bot. For a command's exact flags, run its `--help` (always allowed)
-before composing it — `["base", "+record-history-list", "--help"]`.
+before composing it — `["base", "+record-batch-update", "--help"]`.
 
 ## Filtered and sorted reads
 
@@ -43,31 +43,19 @@ Passing `[{"id":…}]` here fails with 800004006 "failed to parse lite filter".
 
 ## Batch update
 
-`+record-batch-update` takes the same columnar shape as `+record-batch-create` plus the
-record handle: `{"fields":["_record_id","阶段"],"rows":[["rec…","已成交"]]}`. Read the
-`_record_id` values from `+record-list` / `+record-search` first — never construct one.
-
-## Attachments
-
-Attachment cells are NOT ordinary CellValues; use the dedicated commands:
-- `["base", "+record-upload-attachment", "--base-token", "<tok>", "--table-id", "<表名>", "--record-id", "<rec…>", "--field-id", "<字段名>", "--file", "<cwd-relative path>"]`
-- `+record-download-attachment` (by record, optionally one `--file-token`)
-- `+record-remove-attachment` (by `file_token`)
-
-## Record history and share links
-
-- `["base", "+record-history-list", "--base-token", "<tok>", "--table-id", "<表名>", "--record-id", "<rec…>"]`
-  — one record's change log. Not a whole-table audit; do not loop it over a table.
-- `["base", "+record-share-link-create", …]` — share links for up to 100 records per call.
+`+record-batch-update` applies ONE patch to MANY records:
+`{"record_id_list":["rec…","rec…"],"patch":{"阶段":"已成交"}}` — identical values land on
+every id, max 200 per call. It cannot write per-row different values; for those call
+`+record-upsert` once per record. Read the ids from `+record-list` / `+record-search`
+first — never construct one.
 
 ## Fields: create, update, formula, lookup
 
 - `["base", "+field-create", "--base-token", "<tok>", "--table-id", "<表名>", "--json", "{\"name\":\"负责人\",\"type\":\"user\"}"]`
 - `+field-update` is a FULL PUT — `+field-get` first and send back the complete shape, or
   you will silently drop the field's options/format.
-- `formula` and `lookup` fields take a computed spec that is easy to get wrong and the CLI
-  gates them behind a hidden `--i-have-read-guide` flag. Preview with `--dry-run`, and if
-  the spec is not obvious, say the column needs to be added by hand rather than guessing.
+- `formula` and `lookup` fields take a computed spec this skill has never verified. Say the
+  column has to be added by hand; do not guess one.
 
 ## Base structure
 
@@ -76,8 +64,16 @@ Attachment cells are NOT ordinary CellValues; use the dedicated commands:
 describes a Base you have never read. `+base-get` returns the Base's own metadata;
 `+base-copy` duplicates one.
 
-## Still not covered
+## Not available — two different answers, never blur them
 
-Dashboards, forms, workflows, roles and advanced permissions are not supported by this
-app. If a request needs a Base surface none of this describes, say what you cannot do and
-stop — never guess a command or ask anyone to log in.
+**The scope was never granted** (the app can do it; an admin has to turn it on). Name the
+permission, say the admin was sent a grant link, stop: dashboards `base:dashboard:read`,
+forms `base:form:read`, workflows `base:workflow:read`, roles and advanced permissions
+`base:role:read`, one record's change history `base:history:read`.
+
+**No file channel yet.** Attachment upload/download and importing a local .xlsx/.csv into
+a Base both need a file on disk, and this bot has no way to receive one. Say the file
+cannot be taken in yet — do not offer a workaround.
+
+For any other Base surface none of this describes, say what you cannot do and stop —
+never guess a command or ask anyone to log in.

@@ -1,8 +1,8 @@
 ---
 name: feishu-base
 description: 多维表格(Base) — 建库建表、写/改/查记录、分组统计、看板视图、分享给人。Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
-scopes: ["base:app:create", "base:table:read", "base:record:create", "base:record:update", "drive:drive"]
-commands: ["base +base-create", "base +table-list", "base +field-list", "base +record-upsert", "base +record-batch-create", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
+scopes: ["base:app:create", "base:app:read", "base:table:read", "base:table:create", "base:field:read", "base:record:read", "base:record:create", "base:record:update", "base:record:delete", "base:view:read", "base:view:write_only", "drive:drive"]
+commands: ["base +base-create", "base +table-list", "base +field-list", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
 ---
 Every command below runs as the BOT and was verified live against this CLI. Values go
 through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
@@ -53,6 +53,9 @@ WRITE:
   "{\"fields\":[\"客户名\",\"阶段\"],\"rows\":[[\"李四贸易\",\"跟进中\"],[\"王五制造\",\"已成交\"]]}"]
   TRAP: batch JSON is COLUMNAR — a `fields` order plus `rows` arrays. An array of record
   objects is rejected. `null` empties a cell. Max 200 rows per call.
+- Same change across many rows: ["base", "+record-batch-update", …, "--json",
+  "{\"record_id_list\":[\"rec…\",\"rec…\"],\"patch\":{\"阶段\":\"已成交\"}}"] — ONE patch
+  lands on every id. Different values per row is NOT this command; loop +record-upsert.
 - Cell values: text "x"; number 12.5; select "已成交" (write the plain string even though
   reads return `["已成交"]`); multi-select ["A","B"]; datetime "2026-07-28 10:00:00";
   checkbox true; user/link [{"id":"ou_xxx"}] / [{"id":"rec_xxx"}] — resolve every id from
@@ -94,8 +97,10 @@ Traps and boundaries:
 - 99991672 = a missing APP scope: name the permission, say the admin was sent a grant
   link, stop. A "no permission" without 99991672 = this Base was never shared with the
   bot — ask for it to be shared. Neither is a reason to switch identity or send a login.
-- 仪表盘 (dashboards), 表单 (forms), 流程 (workflows), 角色/高级权限 are NOT supported by
-  this app — say so plainly and stop; do not call them, do not reword the request.
+- 仪表盘, 表单, 流程, 角色/高级权限 and 记录修改历史 all need a scope this app was never
+  granted: name the permission, say the admin was sent a grant link, stop. 附件 and
+  importing a local Excel/CSV need a file the bot has no way to receive yet — a different
+  answer, so do not call it a permission problem. Details in references/base-advanced.md.
 - A plain 电子表格 (sheets) request lands here too: that domain is not enabled, so build a
   Base — typed columns cover the same need. Only say spreadsheets are unavailable if the
   person insists on an actual .xlsx.

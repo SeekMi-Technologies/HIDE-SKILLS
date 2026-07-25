@@ -1,5 +1,5 @@
 ---
-name: message-digest
+name: feishu-digest
 description: 消息速览 — summarize recent messages in a chat or DM ("这个群最近聊了啥", "catch me up", "速览"). Use for any recap/digest request about a Feishu conversation.
 scopes: ["im:message"]
 commands: ["im +chat-messages-list"]
@@ -9,7 +9,9 @@ Fetch — ONE time-boxed call, never open-ended paging:
  "--start", "2026-07-06T00:00:00-07:00", "--end", "2026-07-06T23:59:59-07:00"]
 - --start/--end are ISO 8601 WITH an explicit UTC offset (exact format above,
   verified live). "今天" = start of today in the REQUESTER's local timezone.
-- For a DM use --user-id <ou_xxx> instead of --chat-id (mutually exclusive).
+- A DM has its own oc_ chat id — use --chat-id for it too. TRAP: --user-id looks like
+  the DM path but is USER-IDENTITY-ONLY; as bot it fails. Never call it, never offer a
+  login to get it.
 - Messages return newest-first (--order asc to flip); reactions are included.
 - To find the chat id: ["im", "+chat-search", "--query", "<群名>"].
 - If one window returns too much, NARROW the --start/--end window and re-fetch;
