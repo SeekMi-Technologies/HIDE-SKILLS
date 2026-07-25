@@ -34,9 +34,20 @@ formats leaves a doc part-rendered, part-literal:
   ["docs", "+create", "--title", "<title>", "--content", "<DocxXML>"]
   Minimal shape: <p>…</p> <h2>…</h2> <ul><li>…</li></ul>
   <blockquote><p><b>…</b> …</p></blockquote> <callout emoji="🤝"><p>…</p></callout> <hr/>.
-  For anything richer — tables, grids, checkboxes, @mentions, code, colors, images,
-  or editing an existing doc's blocks — read references/docx-xml.md FIRST; a blind
-  create or edit produces duplicates or corrupts the doc.
+  For anything richer — tables, grids, checkboxes, @mentions, code, colors, or editing
+  an existing doc's blocks — read references/docx-xml.md FIRST; a blind create or edit
+  produces duplicates or corrupts the doc.
+
+IMAGES AND MEDIA — never hand-write an `<img>`: its `src` is a file_token that only
+exists after an upload. One command does the whole thing (and rolls itself back on
+failure):
+  ["docs", "+media-insert", "--doc", "<token>", "--file", "./<name>", "--type", "image",
+   "--caption", "<说明>"]
+  `--file` must be RELATIVE to the working directory — an absolute path is rejected. Pass
+  "--width"/"--height" when the source dimensions cannot be read. Audio and video go in
+  with "--type" "file" plus "--file-view" "preview", which renders an inline player.
+  This needs the file to be ON DISK already; the bot cannot pull one out of a chat, so
+  if someone wants their photo in a doc, say that plainly.
   Place it with --parent-token <folder-or-wiki-node-token>; omit for the default library.
 
 SHARE — HARD RULE: a bot-created doc is invisible to the requester until you share it,
