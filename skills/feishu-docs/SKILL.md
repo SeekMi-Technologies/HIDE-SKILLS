@@ -1,6 +1,6 @@
 ---
 name: feishu-docs
-description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
+description: Search, read, or create Feishu docs / 云文档 / drive 文件. Use for any request about a document's CONTENT — writing one, finding one, reading one, sharing one. The 知识库 space and its node tree are feishu-wiki.
 scopes: ["drive:drive", "docx:document"]
 commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update"]
 ---
