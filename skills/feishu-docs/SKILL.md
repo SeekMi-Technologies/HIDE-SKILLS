@@ -2,7 +2,7 @@
 name: feishu-docs
 description: Search, read, or create Feishu docs / 云文档 / wiki / 知识库 / drive files. Use for any request about Feishu documents or knowledge-base content.
 scopes: ["drive:drive", "docx:document"]
-commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update", "wiki +move"]
+commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update"]
 ---
 The Feishu document domain runs entirely as the bot — never offer feishu_connect_user
 for a doc task. Values go through flags only.
@@ -57,15 +57,10 @@ Permissions are TWO layers — diagnose precisely:
   resource was never shared with the bot:
   · a doc: open it → "…" → 更多 → 添加文档应用 → pick this bot; or share the doc/folder
     to a group chat this bot is in;
-  · a wiki space (知识库): the space's member dialog only accepts 用户/群组/部门/用户组 —
-    there is NO 应用 option, so tell them to add a GROUP CHAT THIS BOT IS IN
-    (知识库设置 → 成员设置 → 角色与权限 → 添加成员 → search the group name). The bot then
-    inherits the space through that group; this is the official path and it is verified.
-    Never tell anyone to add the bot itself in the UI.
-- Putting a doc INTO the wiki is ["wiki", "+move", …] and works as bot. If
-  ["wiki", "spaces", "list"] is empty the bot belongs to no space — ask to be added
-  (member type 应用). That is a space-owner action; user identity does not help, so
-  never offer a login for it.
+  · a wiki space (知识库): read the feishu-wiki skill — getting the bot into a space has
+    one correct answer and it is not the one people guess.
+- The 知识库 itself — putting a doc into it, the node tree, who can see a space — is
+  feishu-wiki. This skill stops at document content.
 - Empty search/list results can mean the same thing — the bot only sees what it was given.
 
 Meeting minutes (智能纪要 / 妙记) and forwarded docs:
