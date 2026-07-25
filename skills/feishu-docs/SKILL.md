@@ -20,6 +20,10 @@ unavailable to the bot — never reach for them, and never offer a login to get 
 
 READ a doc: ["docs", "+fetch", "--doc", "<token or URL>"] — returns DocxXML. Get the
 token from a search result or a pasted …/docx/<token> URL.
+  When the content is headed into a CHAT REPLY, fetch it with ["--doc-format",
+  "im-markdown"] instead: it unescapes entities (R&amp;D → R&D) and rewrites the doc's
+  <cite type="user" …> into IM's own <at user_id="ou_…">Name</at>. Raw DocxXML pasted
+  into a message renders literally — that is a bug we shipped once.
 
 CREATE a doc — always DocxXML (the native format; +fetch returns it, so
 fetch → edit → write round-trips losslessly, and it reaches blocks Markdown cannot
