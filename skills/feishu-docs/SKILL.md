@@ -57,8 +57,11 @@ Permissions are TWO layers — diagnose precisely:
   resource was never shared with the bot:
   · a doc: open it → "…" → 更多 → 添加文档应用 → pick this bot; or share the doc/folder
     to a group chat this bot is in;
-  · a wiki space (知识库): space 设置 → 成员 → add this bot (member type 应用) or a
-    group containing it.
+  · a wiki space (知识库): the space's member dialog only accepts 用户/群组/部门/用户组 —
+    there is NO 应用 option, so tell them to add a GROUP CHAT THIS BOT IS IN
+    (知识库设置 → 成员设置 → 角色与权限 → 添加成员 → search the group name). The bot then
+    inherits the space through that group; this is the official path and it is verified.
+    Never tell anyone to add the bot itself in the UI.
 - Putting a doc INTO the wiki is ["wiki", "+move", …] and works as bot. If
   ["wiki", "spaces", "list"] is empty the bot belongs to no space — ask to be added
   (member type 应用). That is a space-owner action; user identity does not help, so
