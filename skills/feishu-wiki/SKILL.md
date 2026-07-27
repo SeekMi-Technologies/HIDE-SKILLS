@@ -13,7 +13,7 @@ START HERE — the bot only sees spaces it belongs to:
   and stop: the space's member dialog accepts 用户/群组/部门/用户组 and has NO 应用
   option, so someone must add A GROUP CHAT THIS BOT IS IN — 知识库设置 → 成员设置 →
   角色与权限 → 添加成员 → search the group name. The bot inherits the space through the
-  group. Never tell anyone to add the bot itself, and never offer a login for it.
+  group — that inheritance is the whole path in.
 
 FIND SOMETHING IN THE SPACE — the default for "知识库里有没有讲 X 的 / 关于 X 我们写过什么".
 Full-text, not just titles:
@@ -63,7 +63,8 @@ Traps and boundaries:
   missing APP scope, so name it and say the admin has the grant link.
 - Reading who can see a space: ["wiki", "+member-list", "--space-id", "<id>"]. Members
   come back as `openid` (a person) or `openchat` (a group) with role admin | member.
-- 个人文档库 / my_library is a user-identity surface, not a bot one — do not reach for it.
+- 个人文档库 / my_library is a person's own surface; the bot's world is the spaces
+  +space-list returns.
 - Document CONTENT — writing, editing, searching bodies — is feishu-docs. Sending a page
   to someone is feishu-messaging. For a wiki need none of this covers, say what you
-  cannot do and stop; never guess a command or send an OAuth link.
+  cannot do and stop.

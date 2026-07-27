@@ -36,4 +36,4 @@ a task under a parent; OMIT `--ancestor-id` to make it independent again.
 the file cannot be taken in — do not offer a workaround.
 
 If a request needs a task surface none of this describes, say what you cannot do and
-stop — never guess a command or ask anyone to log in.
+stop.

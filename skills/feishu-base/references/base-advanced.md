@@ -75,5 +75,4 @@ forms `base:form:read`, workflows `base:workflow:read`, roles and advanced permi
 a Base both need a file on disk, and this bot has no way to receive one. Say the file
 cannot be taken in yet — do not offer a workaround.
 
-For any other Base surface none of this describes, say what you cannot do and stop —
-never guess a command or ask anyone to log in.
+For any other Base surface none of this describes, say what you cannot do and stop.

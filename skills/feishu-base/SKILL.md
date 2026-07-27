@@ -7,14 +7,14 @@ commands: ["base +base-create", "base +table-list", "base +field-list", "base +r
 Every command below runs as the BOT and was verified live against this CLI. Values go
 through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
 
-FIND THE BASE FIRST — never invent a token:
+FIND THE BASE FIRST — every base_token comes from one of these three:
 - A pasted link ⇒ ["base", "+url-resolve", "--url", "<url>"] → `base_token`.
 - "有哪些多维表格 / 我们建过什么表" ⇒ ["drive", "files", "list"] and keep the
   `type: "bitable"` entries — their `token` IS the base_token. This is a Drive question,
   not a Base one (`base` has no list command), and it answers what the BOT can see, so
   say that rather than claiming it is everything.
 - A title you can match against that list ⇒ use its token. Still ambiguous ⇒ ASK.
-  (`+title-resolve` is user-identity-only; never call it, never offer a login for it.)
+  (`+title-resolve` appears in --help and the bot cannot use it — match against the list.)
 - Nothing exists yet ⇒ create one (below).
 
 CREATE — one shot, whole schema (adding fields later is a separate write per column):
@@ -32,7 +32,7 @@ SHARE — HARD RULE, in the SAME turn as the create, before you report back:
   bot identity … auto-grant was skipped". `--type bitable` is REQUIRED with a bare token.
   This is high-risk-write: the platform handles the confirmation, so issue the command and
   never add `--yes` yourself. If batching 2+ ids 99991672s (that path needs
-  docs:permission.member), repeat the call ONE person at a time — never ask anyone to log in.
+  docs:permission.member), repeat the call ONE person at a time.
 
 READ:
 - ["base", "+table-list", "--base-token", "<tok>"] → `{id, name}` per table.
@@ -96,15 +96,15 @@ Traps and boundaries:
   report a change you did not actually execute.
 - 99991672 = a missing APP scope: name the permission, say the admin was sent a grant
   link, stop. A "no permission" without 99991672 = this Base was never shared with the
-  bot — ask for it to be shared. Neither is a reason to switch identity or send a login.
+  bot — ask for it to be shared.
 - 仪表盘, 表单, 流程, 角色/高级权限 and 记录修改历史 all need a scope this app was never
   granted: name the permission, say the admin was sent a grant link, stop. 附件 and
-  importing a local Excel/CSV need a file the bot has no way to receive yet — a different
-  answer, so do not call it a permission problem. Details in references/base-advanced.md.
+  importing a local Excel/CSV need a file the bot has no way to receive yet — name the
+  missing file channel as the reason. Details in references/base-advanced.md.
 - A plain 电子表格 (sheets) request lands here too: that domain is not enabled, so build a
   Base — typed columns cover the same need. Only say spreadsheets are unavailable if the
   person insists on an actual .xlsx.
 
 Attachments, record history, share links, formula/lookup columns, view filters and sorts
 are in references/base-advanced.md — read it only when a request needs one. For a Base
-need neither file covers, say what you cannot do and stop; never guess a command.
+need neither file covers, say what you cannot do and stop.
