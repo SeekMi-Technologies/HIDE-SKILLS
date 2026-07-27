@@ -35,4 +35,4 @@ Rules:
 - One send per request; the platform pauses every send for the user's confirmation.
 - This skill covers send, reply, and chat-search only. For a messaging surface it does
   not describe — editing an already-sent message, interactive cards, pinning, reactions
-  — say what you cannot do and stop. Never guess a command or send an OAuth link.
+  — say what you cannot do and stop.

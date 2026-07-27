@@ -21,8 +21,8 @@ Booking recipe (follow in order):
    requester is ALWAYS an attendee, even when they only named other people: the
    event lives on the bot's calendar, so anyone left off cannot see it at all.
 2. Determine each attendee's timezone from the team directory / memory / what the
-   user said; if still unknown, ASK rather than assume. Do NOT expect
-   ["contact", "+get-user"] to help — as bot it returns only ids, no timezone.
+   user said; if still unknown, ASK rather than assume — ["contact", "+get-user"]
+   returns ids only, no timezone.
 3. +freebusy each attendee across the candidate window; on conflict use +suggestion
    or propose alternatives — never double-book silently. An EMPTY result means that
    person is free, not that you are blind — proceed.
@@ -32,15 +32,12 @@ Booking recipe (follow in order):
    explicitly (mind the date line: LA evening = next-day Beijing morning) and state
    both in your report. Attendees then accept or decline in Feishu.
 
-IDENTITY — the whole booking path is bot. Never switch to identity="user" to book:
-- +create, +update, +freebusy and attendee invites all work as bot. `+create` on a
-  bot-owned calendar with attendees IS the normal booking flow.
-- An empty +freebusy is NEVER a reason to switch identity or to offer
-  feishu_connect_user. If availability genuinely cannot be read the app is missing
-  `calendar:calendar.free_busy:read` — that is an ADMIN grant, not a user login, so
-  say so and book anyway rather than sending anyone an OAuth link.
-- Only reading the SPEAKER's own personal calendar ("我的日程") justifies
-  identity="user", and only when they already have a connected identity.
+Reading someone's day ("我的日程 / 老王这周忙吗"): +freebusy with their open_id returns
+their busy blocks. Full detail — title, attendees — comes back only for events on the
+bot's own calendar, which is every event booked through this skill. Say which of the
+two you are reporting. Availability also reads empty when the app lacks
+`calendar:calendar.free_busy:read` — an admin grant — so if a booking turns out to
+collide, name that permission as the thing to grant.
 
 Destructive calendar changes (delete/update an existing event) pause for the
 user's confirmation; creates run directly.

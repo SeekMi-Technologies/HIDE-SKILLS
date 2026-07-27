@@ -17,9 +17,8 @@ from the [Team directory] block — never guessed, never from im +chat-search):
   "--description", "<text>", "--idempotency-key", "<stable-key>"]
   HARD RULE 1: always pass --assignee with the requester's open_id (plus anyone they
   name). A bot-created task with no assignee is INVISIBLE in everyone's task app.
-  HARD RULE 2: always pass --tasklist-id. A task created outside the list is
-  unreadable by the bot afterwards, and the only way back to it is a user login —
-  which is exactly what this skill exists to avoid.
+  HARD RULE 2: always pass --tasklist-id. The list is the only handle the bot keeps on
+  a task; one created outside it is unreadable afterwards.
 - Update title/desc/due: ["task", "+update", "--task-id", "<guid>", "--due", "2026-07-27"]
   Members can NOT be updated here (the API rejects members as an update field) — use +assign.
 - Members: ["task", "+assign", "--task-id", "<guid>", "--add", "<ou_a,ou_b>"] (--remove to drop).
@@ -46,17 +45,12 @@ Reading tasks back ("我的待办 / 有哪些任务 / 我有哪些待办") — A
        · "<某人>的待办" → filter by that person's open_id instead.
        · no person named ("清单里有哪些任务") → list them all.
      Report each kept task's summary, assignee, due and completion state.
-"我的 / 我有" does NOT mean switch to user identity: the bot owns the tasklist, so it
-reads the human's tasks as bot and filters by open_id. Never offer feishu_connect_user
-to read tasks.
-
-TRAP — do NOT pick a read command from `task --help`. It advertises +get-my-tasks,
-+get-related-tasks and +search, which LOOK perfect ("List tasks assigned to me") but
-are ALL user-identity-only and error "only supports: user". Never call them. There is
-no +list-my-tasks. ["task", "tasks", "list"] as bot lists only what the BOT is
-responsible for — we always assign the human, so it is empty by construction.
-If a task predates STEP 0 and is therefore outside the list, say it is not in the
-list rather than asking anyone to log in.
+Those two steps are the whole read path — the bot owns the tasklist, so "我的 / 我有"
+is answered by filtering it on the speaker's open_id. `task --help` also advertises
++get-my-tasks, +get-related-tasks and +search, which read like a shortcut and the bot
+cannot use; ["task", "tasks", "list"] returns only what the BOT is responsible for, and
+every task here is assigned to a human, so it comes back empty. A task that predates
+STEP 0 sits outside the list — say it is not in the list.
 
 Traps (each one observed live):
 - +get-task, +delete, +list, +create-reminder do not exist. Deleting is
@@ -70,5 +64,4 @@ Traps (each one observed live):
 
 Rare surfaces — sections, subtasks, custom fields, comments, followers, attachments,
 task hierarchy — are in references/task-advanced.md; read it only when a request needs
-one. For a task need neither here nor there covers, say what you cannot do and stop —
-never guess a command or ask anyone to log in.
+one. For a task need neither here nor there covers, say what you cannot do and stop.
