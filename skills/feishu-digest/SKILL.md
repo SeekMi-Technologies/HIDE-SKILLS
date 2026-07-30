@@ -19,6 +19,8 @@ Judge from what came back, never from the window you picked:
   window before saying anything about "no messages".
 - has_more, and the 50 span only hours → busy chat; add --start/--end or take one
   more page (never more than one extra).
+- has_more still true when you stop → you read only part of the chat. Say the digest
+  is partial and name the span you did cover; never present it as the whole picture.
 - Nothing even unbounded → the bot reads only messages sent after it joined the
   chat. Say so and stop.
 
