@@ -1,6 +1,6 @@
 ---
 name: feishu-wiki
-description: 知识库(Wiki) — 把文档搬进知识库、在里面建页面、整理目录树、读里面的内容。Use for any 知识库/知识空间/wiki request or a /wiki/ link. Page CONTENT (writing and editing a doc's body) belongs to feishu-docs; this skill owns the space and its node tree.
+description: Wiki (知识库) — move docs into a space, create pages, organize the node tree, read page content. Use for any 知识库/知识空间/wiki request or a /wiki/ link. Page CONTENT (writing and editing a doc's body) belongs to feishu-docs; this skill owns the space and its node tree.
 scopes: ["wiki:wiki", "search:docs:read"]
 commands: ["wiki +space-list", "wiki +node-list", "wiki +node-get", "wiki +node-create", "wiki +move", "wiki +member-list", "drive +search"]
 ---

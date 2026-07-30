@@ -1,6 +1,6 @@
 ---
 name: feishu-base
-description: 多维表格(Base) — 建库建表、写/改/查记录、分组统计、看板视图、分享给人。Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
+description: Base (多维表格) — create bases and tables, write/update/query records, group and count, board views, grant access. Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
 scopes: ["base:app:create", "base:app:read", "base:table:read", "base:table:create", "base:field:read", "base:record:read", "base:record:create", "base:record:update", "base:record:delete", "base:view:read", "base:view:write_only", "drive:drive"]
 commands: ["base +base-create", "base +table-list", "base +field-list", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
 ---
