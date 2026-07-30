@@ -17,9 +17,11 @@ offset, e.g. 2026-07-06T18:00:00-07:00):
   (attendees accept user ou_, chat oc_, room omm_ ids; --rrule rfc5545 for recurring)
 
 Booking recipe (follow in order):
-1. Resolve every attendee's open_id (feishu-contacts skill). HARD RULE — the
-   requester is ALWAYS an attendee, even when they only named other people: the
-   event lives on the bot's calendar, so anyone left off cannot see it at all.
+1. --attendee-ids = the speaker's open_id from [Current turn] PLUS the open_id of
+   every other person named. The speaker is an attendee even when they named only
+   someone else ("book me a meeting with Wang" → both ids): the event lives on the
+   bot's calendar, so anyone left off cannot see it at all. Resolve the other names
+   from [Team directory], or with the feishu-contacts skill if they are not listed.
 2. Determine each attendee's timezone from the team directory / memory / what the
    user said; if still unknown, ASK rather than assume — ["contact", "+get-user"]
    returns ids only, no timezone.
@@ -30,7 +32,8 @@ Booking recipe (follow in order):
    The create runs directly with no human review — triple-check date, offset, and
    ids BEFORE the call. For cross-timezone meetings compute the time in BOTH zones
    explicitly (mind the date line: LA evening = next-day Beijing morning) and state
-   both in your report. Attendees then accept or decline in Feishu.
+   both in your report. Name every attendee you invited — the event sits on the bot's
+   calendar and they accept or decline it in Feishu.
 
 Reading someone's day ("我的日程 / 老王这周忙吗"): +freebusy with their open_id returns
 their busy blocks. Full detail — title, attendees — comes back only for events on the
