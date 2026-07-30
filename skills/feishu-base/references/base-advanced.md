@@ -66,10 +66,10 @@ describes a Base you have never read. `+base-get` returns the Base's own metadat
 
 ## Not available — two different answers, never blur them
 
-**The scope was never granted** (the app can do it; an admin has to turn it on). Name the
-permission, say the admin was sent a grant link, stop: dashboards `base:dashboard:read`,
-forms `base:form:read`, workflows `base:workflow:read`, roles and advanced permissions
-`base:role:read`, one record's change history `base:history:read`.
+**The scope was never granted** (the app can do it; an admin has to turn it on). The
+99991672 names the scope — quote that, say the admin was sent a grant link, stop. There is
+no list of ungranted surfaces here on purpose: the row asks for `bitable:app`, which every
+Base endpoint accepts, so only the live error knows what is still missing.
 
 **No file channel yet.** Attachment upload/download and importing a local .xlsx/.csv into
 a Base both need a file on disk, and this bot has no way to receive one. Say the file

@@ -1,7 +1,7 @@
 ---
 name: feishu-base
 description: Base (多维表格) — create bases and tables, write/update/query records, group and count, board views, grant access. Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
-scopes: ["base:app:create", "base:app:read", "base:table:read", "base:table:create", "base:field:read", "base:record:read", "base:record:create", "base:record:update", "base:record:delete", "base:view:read", "base:view:write_only", "drive:drive"]
+scopes: ["bitable:app", "docs:permission.member", "drive:drive"]
 commands: ["base +base-create", "base +table-list", "base +field-list", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
 ---
 Every command below runs as the BOT and was verified live against this CLI. Values go
@@ -97,10 +97,9 @@ Traps and boundaries:
 - 99991672 = a missing APP scope: name the permission, say the admin was sent a grant
   link, stop. A "no permission" without 99991672 = this Base was never shared with the
   bot — ask for it to be shared.
-- 仪表盘, 表单, 流程, 角色/高级权限 and 记录修改历史 all need a scope this app was never
-  granted: name the permission, say the admin was sent a grant link, stop. 附件 and
-  importing a local Excel/CSV need a file the bot has no way to receive yet — name the
-  missing file channel as the reason. Details in references/base-advanced.md.
+- 附件 and importing a local Excel/CSV need a file the bot has no way to receive yet —
+  name the missing file channel as the reason, which is not a missing scope. Details in
+  references/base-advanced.md.
 - A plain 电子表格 (sheets) request lands here too: that domain is not enabled, so build a
   Base — typed columns cover the same need. Only say spreadsheets are unavailable if the
   person insists on an actual .xlsx.
