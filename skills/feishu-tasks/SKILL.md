@@ -1,7 +1,7 @@
 ---
 name: feishu-tasks
 description: Create, update, remind, assign, complete Feishu tasks/待办. Use for any 任务/task/todo/提醒 request.
-commands: ["task +create", "task +update", "task +assign", "task +reminder", "task +tasklist-create"]
+commands: ["task +create", "task +update", "task +assign", "task +reminder", "task +tasklist-create", "task +tasklist-members", "task +complete"]
 ---
 Commands (grammar verified live against the pinned lark-cli 1.0.63; open_ids come
 from the [Team directory] block — never guessed, never from im +chat-search):
@@ -12,6 +12,10 @@ from the [Team directory] block — never guessed, never from im +chat-search):
   ["task", "+tasklist-create", "--name", "<short topic name>", "--member", "<ou_requester>"]
   Re-run the list rather than trusting memory of an earlier turn — a task created
   without the guid is the one failure this skill cannot recover from.
+  When REUSING a list: ["task", "tasklists", "get", "--tasklist-guid", "<guid>"] and
+  check the requester's open_id is in `members`; if not,
+  ["task", "+tasklist-members", "--tasklist-id", "<guid>", "--add", "<ou_requester>"] —
+  someone outside the list cannot see its tasks.
 - Create: ["task", "+create", "--summary", "<title>", "--assignee", "<ou_requester>",
   "--tasklist-id", "<guid from STEP 0>", "--due", "2026-07-30",
   "--description", "<text>", "--idempotency-key", "<stable-key>"]
@@ -19,6 +23,11 @@ from the [Team directory] block — never guessed, never from im +chat-search):
   name). A bot-created task with no assignee is INVISIBLE in everyone's task app.
   HARD RULE 2: always pass --tasklist-id. The list is the only handle the bot keeps on
   a task; one created outside it is unreadable afterwards.
+  HARD RULE 3: ok:true is NOT proof the person got the task. An open_id the API does
+  not recognize is SILENTLY DROPPED (worst case the assignee becomes the app itself,
+  invisible to every human). After create/assign/member changes, read back —
+  ["task", "tasks", "get", "--task-guid", "<guid>"] — and confirm the requester's
+  open_id really appears in `members` before reporting success.
 - Update title/desc/due: ["task", "+update", "--task-id", "<guid>", "--due", "2026-07-27"]
   Members can NOT be updated here (the API rejects members as an update field) — use +assign.
 - Members: ["task", "+assign", "--task-id", "<guid>", "--add", "<ou_a,ou_b>"] (--remove to drop).
@@ -53,12 +62,20 @@ every task here is assigned to a human, so it comes back empty. A task that pred
 STEP 0 sits outside the list — say it is not in the list.
 
 Traps (each one observed live):
-- +get-task, +delete, +list, +create-reminder do not exist. Deleting is
-  ["task", "tasks", "delete", "--task-guid", "<guid>"].
+- +get-task, +delete, +list, +create-reminder, +delete-tasklist, +tasklist-delete do
+  not exist. Deleting a task is ["task", "tasks", "delete", "--task-guid", "<guid>"];
+  deleting a whole tasklist is ["task", "tasklists", "delete", "--tasklist-guid",
+  "<guid>"] (plural `tasklists`, raw command — no + prefix).
   ISSUE THAT COMMAND. Its --help says high-risk-write / needs confirmation — that
   confirmation is handled for you once you call it; it is NOT an instruction to stop.
   Never add --yes yourself, and never report a deletion (or any change) you did not
   actually execute — reading --help is not doing the work.
+- Every guid you pass came verbatim from a `tasklists list` / `tasks get` response in
+  THIS conversation — a UUID like 9c70…-…-…. Applink URLs and base64 blobs are not
+  guids; the API rejects them ("Correct format: a valid uuid format").
+- +tasklist-search is user-identity-only and its error suggests --as user, which is
+  also unavailable — the whole search path is a dead end; find lists via
+  ["task", "tasklists", "list"].
 - Values go through flags only — positional arguments are rejected.
 - Bot identity cannot add members across tenants (tenant_access_token scope).
 
