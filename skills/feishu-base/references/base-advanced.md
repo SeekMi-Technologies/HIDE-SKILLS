@@ -1,8 +1,39 @@
-# feishu-base — advanced surfaces (rare)
+# feishu-base — deep grammar per surface
 
-Read this only when a request needs something the main skill does not cover. Everything
-here runs as the bot. For a command's exact flags, run its `--help` (always allowed)
-before composing it — `["base", "+record-batch-update", "--help"]`.
+Read the section the skill body routed you to; everything here runs as the bot and was
+verified live. For a command's exact flags, run its `--help` (always allowed) before
+composing it — `["base", "+record-batch-update", "--help"]`.
+
+## Linked-record (关联) fields
+
+- Create: `["base", "+field-create", "--base-token", "<tok>", "--table-id", "<会谈记录>",
+  "--json", "{\"name\":\"关联客户\",\"type\":\"link\",\"link_table\":\"<tbl_ or name of 客户>\"}"]`
+  `link_table` sits at the TOP level — a `property` wrapper or `type:18` is rejected.
+  Add `"bidirectional":true` for 双向关联; the response's `bidirectional_link_field_id`
+  is the auto-created column in the OTHER table.
+- Rename that auto column with the SAME minimal shape, aimed at the other table:
+  `["base", "+field-update", "--base-token", "<tok>", "--table-id", "<客户>", "--field-id",
+  "<bidirectional_link_field_id>", "--json",
+  "{\"name\":\"相关会谈\",\"type\":\"link\",\"link_table\":\"<会谈记录>\",\"bidirectional\":true}"]`
+  The field handle is the `--field-id` FLAG; echoing `id` or `bidirectional_link_field_id`
+  inside the JSON is rejected ("Unrecognized key(s)").
+- Cell values are record ids FROM THE TARGET TABLE: `"关联客户":[{"id":"rec_xxx"}]` — read
+  them off the target with +record-list/+record-search first, never construct one. The
+  same value form works in +record-upsert, inside columnar +record-batch-create rows, and
+  as a +record-batch-update patch.
+
+## Bulk jobs (linking or updating tens of rows)
+
+1. Count calls BEFORE writing: one +record-batch-create per 200 new rows (columnar); one
+   +record-batch-update per DISTINCT value (one patch → every id in `record_id_list`,
+   ≤200 — group rows sharing a value and write each group once); one +record-upsert per
+   row only when every row differs. State the count in your plan.
+2. Read every page first: `--limit` ≤200 with `--offset`, continue while the `Meta:` line
+   says has_more. Grouping from a half-read table writes wrong data.
+3. Make the job resumable from the TABLE, not memory: remaining rows =
+   `--filter-json '{"logic":"and","conditions":[["<target col>","empty"]]}'` — a
+   continuation after any interruption costs two reads, not a re-exploration.
+4. Report progress in numbers ("42/62 家已关联") and only what actually ran.
 
 ## Filtered and sorted reads
 
@@ -52,8 +83,12 @@ first — never construct one.
 ## Fields: create, update, formula, lookup
 
 - `["base", "+field-create", "--base-token", "<tok>", "--table-id", "<表名>", "--json", "{\"name\":\"负责人\",\"type\":\"user\"}"]`
-- `+field-update` is a FULL PUT — `+field-get` first and send back the complete shape, or
-  you will silently drop the field's options/format.
+  Linked-record (关联) columns are mainline — their create/rename/cell grammar lives in
+  the skill body's LINK TWO TABLES section, not here.
+- `+field-update` REPLACES the field definition: `+field-get` first, then send back every
+  WRITABLE property you want kept (options, format) — and only those. Read-only keys the
+  get returns (`id`, `bidirectional_link_field_id`) are rejected with
+  "Unrecognized key(s)"; the field's handle goes in the `--field-id` flag, never the JSON.
 - `formula` and `lookup` fields take a computed spec this skill has never verified. Say the
   column has to be added by hand; do not guess one.
 

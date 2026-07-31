@@ -2,7 +2,7 @@
 name: feishu-base
 description: Base (多维表格) — create bases and tables, write/update/query records, group and count, board views, grant access. Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
 scopes: ["base:app:create", "base:app:read", "base:table:read", "base:table:create", "base:field:read", "base:record:read", "base:record:create", "base:record:update", "base:record:delete", "base:view:read", "base:view:write_only", "drive:drive"]
-commands: ["base +base-create", "base +table-list", "base +field-list", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
+commands: ["base +base-create", "base +table-create", "base +table-list", "base +field-list", "base +field-create", "base +field-update", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
 ---
 Every command below runs as the BOT and was verified live against this CLI. Values go
 through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
@@ -24,6 +24,8 @@ CREATE — one shot, whole schema (adding fields later is a separate write per c
   Types: text, number, select, multi_select, datetime, user, group_chat, link, checkbox,
   attachment, location, auto_number, created_at/updated_at/created_by/updated_by.
   Returns `base_token` + the Base `url`; report the url.
+  Another table in the SAME Base: ["base", "+table-create", "--base-token", "<tok>",
+  "--name", "<表名>", "--fields", "<same JSON shape>"].
 
 SHARE — HARD RULE, in the SAME turn as the create, before you report back:
   ["drive", "+member-add", "--token", "<base_token>", "--type", "bitable",
@@ -61,6 +63,13 @@ WRITE:
   checkbox true; user/link [{"id":"ou_xxx"}] / [{"id":"rec_xxx"}] — resolve every id from
   the [Team directory] first; a wrong one fails loudly with 800030405 not_found.
 
+LINK TABLES & BULK WRITES — 关联字段 (a column pointing at another table's records) and
+any job touching tens of rows: read references/base-advanced.md BEFORE the first write;
+it has the verified JSON shapes for both. The two invariants that void a plan otherwise:
+`link_table` rides at the TOP level of field JSON (a `property` wrapper is rejected), and
++record-batch-update carries ONE patch per call — group rows by identical value and count
+your calls before starting; per-row-distinct values have no batch form in this CLI.
+
 WHOSE ROWS ARE THESE — filter on a person field, never read the table and eyeball it.
 A CRM-style table usually carries an owner column (`{"name":"负责人","type":"user"}`), and
 "我的客户 / 我要跟进谁" means the SPEAKER's rows. The two commands take DIFFERENT filter
@@ -91,6 +100,9 @@ VIEWS — a kanban is the fastest way to make a table feel like a board:
   select field. `+view-list` to see what exists.
 
 Traps and boundaries:
+- Write commands carry their JSON in --json; --data belongs to raw resource commands
+  only. Listing tables is +table-list. When a flag you expect is missing, run the
+  command with --help — the flags there are the complete set.
 - Destructive commands (+record-delete, +table-delete, +field-update — a full PUT) pause
   for the user's confirmation; run them anyway when asked, never add `--yes`, and never
   report a change you did not actually execute.
