@@ -29,7 +29,9 @@ composing it — `["base", "+record-batch-update", "--help"]`.
    ≤200 — group rows sharing a value and write each group once); one +record-upsert per
    row only when every row differs. State the count in your plan.
 2. Read every page first: `--limit` ≤200 with `--offset`, continue while the `Meta:` line
-   says has_more. Grouping from a half-read table writes wrong data.
+   says has_more. Grouping from a half-read table writes wrong data. NO `Meta:` line in
+   the output means the page was truncated before its tail — re-read smaller (--limit 50)
+   and project only needed columns with repeated `--field-id`.
 3. Make the job resumable from the TABLE, not memory: remaining rows =
    `--filter-json '{"logic":"and","conditions":[["<target col>","empty"]]}'` — a
    continuation after any interruption costs two reads, not a re-exploration.
@@ -83,8 +85,8 @@ first — never construct one.
 ## Fields: create, update, formula, lookup
 
 - `["base", "+field-create", "--base-token", "<tok>", "--table-id", "<表名>", "--json", "{\"name\":\"负责人\",\"type\":\"user\"}"]`
-  Linked-record (关联) columns are mainline — their create/rename/cell grammar lives in
-  the skill body's LINK TWO TABLES section, not here.
+  Linked-record (关联) columns: create/rename/cell grammar is the "Linked-record
+  (关联) fields" section at the top of this file.
 - `+field-update` REPLACES the field definition: `+field-get` first, then send back every
   WRITABLE property you want kept (options, format) — and only those. Read-only keys the
   get returns (`id`, `bidirectional_link_field_id`) are rejected with

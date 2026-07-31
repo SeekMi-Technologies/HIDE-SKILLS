@@ -45,9 +45,12 @@ tool crash, and a failed giant call leaves a half-written doc that still reads a
 (A short doc — a few brief sections — stays ONE +create call; chunking it only adds
 calls.) The chunked path:
   1. +create with the title and the FIRST section only.
-  2. Append each remaining section with its own call:
+  2. Append each remaining section with its own call — and re-fetch BEFORE EACH ONE
+     (the +update response returns no block ids, and reusing a stale anchor inserts
+     sections in reverse order):
+     ["docs", "+fetch", "--doc", "<token>", "--detail", "with-ids"] → LAST block id →
      ["docs", "+update", "--doc", "<token>", "--command", "block_insert_after",
-      "--block-id", "<last block id from a fetch --detail with-ids>", "--content", "<one section>"]
+      "--block-id", "<that id>", "--content", "<one section>"]
   3. After the last write: ["docs", "+fetch", "--doc", "<token>"] and CHECK every
      section is present. The completion report describes what this fetch showed —
      nothing else. A "继续" follow-up starts with the same fetch, never from memory
