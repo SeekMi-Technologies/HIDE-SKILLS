@@ -38,13 +38,36 @@ formats leaves a doc part-rendered, part-literal:
   create or edit produces duplicates or corrupts the doc.
   Place it with --parent-token <folder-or-wiki-node-token>; omit for the default library.
 
+BIG content goes in CHUNKS — when the full body would run past roughly 2000 characters
+of DocxXML, or a +create with everything inline just failed with Invalid JSON: one
+oversized --content payload is the known trigger for the model's own empty-arguments
+tool crash, and a failed giant call leaves a half-written doc that still reads as done.
+(A short doc — a few brief sections — stays ONE +create call; chunking it only adds
+calls.) The chunked path:
+  1. +create with the title and the FIRST section only.
+  2. Append each remaining section with its own call — and re-fetch BEFORE EACH ONE
+     (the +update response returns no block ids, and reusing a stale anchor inserts
+     sections in reverse order):
+     ["docs", "+fetch", "--doc", "<token>", "--detail", "with-ids"] → LAST block id →
+     ["docs", "+update", "--doc", "<token>", "--command", "block_insert_after",
+      "--block-id", "<that id>", "--content", "<one section>"]
+  3. After the last write: ["docs", "+fetch", "--doc", "<token>"] and CHECK every
+     section is present. The completion report describes what this fetch showed —
+     nothing else. A "继续" follow-up starts with the same fetch, never from memory
+     of what was supposedly written.
+
+Flags: the document handle is always --doc (--doc-token and --doc-id do not exist);
+block edits address ranges with --start-block-id/--end-block-id or --scope, never
+--range or bare --start/--end.
+
 SHARE — HARD RULE: a bot-created doc is invisible to the requester until you share it,
 in the SAME turn as the create, before you report back:
   ["drive", "+member-add", "--token", "<doc_token>", "--type", "docx",
    "--member-id", "<ou_requester,ou_others>", "--member-type", "openid",
    "--perm", "full_access"]
   --type is REQUIRED with a bare token (a full URL infers it). Share first, then put the
-  doc URL in your reply, so the link works the moment they click it.
+  doc URL in your reply — the `url` field copied verbatim from the create/fetch response,
+  never one assembled from a remembered token — so the link works the moment they click it.
   Batching 2+ ids takes a different API path needing docs:permission.member; if that
   99991672s, repeat +member-add ONCE PER PERSON — stay on +member-add rather than
   dropping to ["drive","permission.members","create"].

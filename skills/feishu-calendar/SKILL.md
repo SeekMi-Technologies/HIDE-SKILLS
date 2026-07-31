@@ -32,8 +32,18 @@ Booking recipe (follow in order):
    The create runs directly with no human review — triple-check date, offset, and
    ids BEFORE the call. For cross-timezone meetings compute the time in BOTH zones
    explicitly (mind the date line: LA evening = next-day Beijing morning) and state
-   both in your report. Name every attendee you invited — the event sits on the bot's
-   calendar and they accept or decline it in Feishu.
+   both in your report. The flags are --summary and --attendee-ids (--title and
+   --attendees do not exist).
+5. VERIFY the invite before reporting it — the +create response carries only
+   {event_id, summary, start, end}, no attendees, so a claim of "已邀请" needs a
+   read-back:
+     ["calendar", "+agenda", "--start", "<event day 00:00>", "--end", "<event day 23:59>"]
+       → your event (bot's own calendar) → its `organizer_calendar_id`;
+     ["calendar", "event.attendees", "list", "--calendar-id", "<that id>",
+      "--event-id", "<event_id from the create response>"] → the real attendee list.
+   Name exactly the people that list shows. Someone missing? Add them this turn —
+   ["calendar", "+update", "--event-id", "<event_id>", "--add-attendee-ids", "<ou_…>"]
+   — and read back again; never report an invite the attendee list does not show.
 
 Reading someone's day ("我的日程 / 老王这周忙吗"): +freebusy with their open_id returns
 their busy blocks. Full detail — title, attendees — comes back only for events on the

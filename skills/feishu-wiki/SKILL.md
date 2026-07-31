@@ -52,6 +52,16 @@ MOVE AN EXISTING DOC IN — the main way a knowledge base gets built:
   Reorganising inside the wiki is the same command with "--node-token" "<tok>" plus
   "--target-parent-token" "<parent node_token>".
 
+SHARING A PAGE'S LINK — copy the `url` field from a tool output in THIS turn
+(+node-create, +node-get and +node-list all return it); never assemble
+https://…/wiki/<token> from a token you remember. A /wiki/ URL carries the
+node_token — built from an obj_token it 404s, and a 404'd wiki link means exactly
+that mix-up: re-resolve with ["wiki", "+node-get", "--node-token", "<the full URL>"]
+and send the url it returns. Content edits never change a node_token; if +node-get
+on the full URL ALSO fails, the node itself was deleted, recreated or moved — find
+the page again with ["drive", "+search", "--query", "<title>", "--space-ids", "<id>"]
+instead of reasoning about tokens.
+
 Traps and boundaries:
 - CREATING A SPACE IS NOT POSSIBLE for the bot — the API takes a user token only, no
   permission changes that. A person must create the 知识库 first; say so and stop.
