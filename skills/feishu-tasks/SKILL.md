@@ -2,6 +2,9 @@
 name: feishu-tasks
 description: Create, update, remind, assign, complete Feishu tasks/待办. Use for any 任务/task/todo/提醒 request.
 commands: ["task +create", "task +update", "task +assign", "task +reminder", "task +tasklist-create", "task +tasklist-members", "task +complete"]
+summary:
+  zh: "建待办、指派给人、设提醒、标记完成"
+  en: "Create Feishu tasks, assign them, set reminders, and close them"
 ---
 Commands (grammar verified live against the pinned lark-cli 1.0.63; open_ids come
 from the [Team directory] block — never guessed, never from im +chat-search):

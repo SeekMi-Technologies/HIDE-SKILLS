@@ -3,6 +3,9 @@ name: feishu-digest
 description: Message recap — summarize recent messages in a chat or DM. Use for any recap or catch-up request about a Feishu conversation (速览, 最近聊了啥, catch me up).
 scopes: ["im:message"]
 commands: ["im +chat-messages-list", "im +chat-search"]
+summary:
+  zh: "把一个群或私聊最近聊的内容汇总一下，告诉你错过了什么"
+  en: "Summarize what was said recently in a chat or DM"
 ---
 Default fetch — one call, no time window:
 ["im", "+chat-messages-list", "--chat-id", "<oc_xxx>", "--page-size", "50"]

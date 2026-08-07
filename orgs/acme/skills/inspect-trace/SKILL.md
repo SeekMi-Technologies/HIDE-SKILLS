@@ -1,6 +1,9 @@
 ---
 name: inspect-trace
 description: "MUST read before investigating any bot reply or Langfuse trace — locate by content search, explain."
+summary:
+  zh: "查某一条回复到底发生了什么——定位到那次对话，解释原因"
+  en: "Trace a specific bot reply back to what actually happened"
 ---
 
 # Inspect traces — find what happened and explain it
