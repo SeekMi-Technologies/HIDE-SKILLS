@@ -1,6 +1,9 @@
 ---
 name: grade-traces
 description: "Check conversation quality: grade recent agent traces in Langfuse, write judge scores, report failures."
+summary:
+  zh: "抽查 Ola 最近的对话质量，逐条打分并列出不合格的"
+  en: "Spot-check Ola's recent conversations and flag the ones that failed"
 ---
 
 # Grade agent traces

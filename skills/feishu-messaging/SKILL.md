@@ -3,6 +3,9 @@ name: feishu-messaging
 description: Send Feishu/Lark messages — DM a person, post to a group chat, reply in thread. Use when asked to message, notify, remind, or share something with someone on Feishu.
 scopes: ["im:message"]
 commands: ["im +messages-send", "im +messages-reply", "im +chat-search"]
+summary:
+  zh: "替你在飞书上发消息——私聊、发群、回复某一条"
+  en: "Send Feishu messages — DMs, group posts, and replies"
 ---
 Send with feishu_cli as the bot (add --dry-run to any command to preview it first):
 

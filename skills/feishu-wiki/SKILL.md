@@ -3,6 +3,9 @@ name: feishu-wiki
 description: Wiki (知识库) — move docs into a space, create pages, organize the node tree, read page content. Use for any 知识库/知识空间/wiki request or a /wiki/ link. Page CONTENT (writing and editing a doc's body) belongs to feishu-docs; this skill owns the space and its node tree.
 scopes: ["wiki:wiki", "search:docs:read"]
 commands: ["wiki +space-list", "wiki +node-list", "wiki +node-get", "wiki +node-create", "wiki +move", "wiki +member-list", "drive +search"]
+summary:
+  zh: "整理知识库——建页面、调目录结构、把文档收进空间"
+  en: "Organize the wiki — create pages, arrange the tree, move docs in"
 ---
 Every command runs as the BOT and was verified live against this CLI. Values go through
 flags only.

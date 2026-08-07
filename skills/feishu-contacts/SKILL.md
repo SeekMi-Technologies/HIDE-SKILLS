@@ -3,6 +3,9 @@ name: feishu-contacts
 description: Resolve a person (Chinese or English name) to their Feishu open_id, or look up a user's profile by id. Use whenever a request names a person you must message, invite, or act on.
 scopes: ["contact:contact.base:readonly", "contact:user.base:readonly"]
 commands: ["contact +get-user", "im +chat-search"]
+summary:
+  zh: "按名字找到同事，拿到发消息或拉日程需要的身份"
+  en: "Look up a colleague by name so Ola can message or invite them"
 ---
 Resolution ladder — stop at the first hit:
 1. [Team directory] context block — one line per member:

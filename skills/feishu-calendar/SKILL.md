@@ -3,6 +3,9 @@ name: feishu-calendar
 description: Feishu calendar — check schedules, find free slots, book meetings (incl. cross-timezone). Use for any 日程/会议/约时间/schedule/meeting request.
 scopes: ["calendar:calendar"]
 commands: ["calendar +agenda", "calendar +freebusy", "calendar +suggestion", "calendar +create"]
+summary:
+  zh: "查日程、找空闲时间、约会议，跨时区也能算"
+  en: "Check schedules, find free slots, and book meetings across time zones"
 ---
 Commands (grammar from the pinned lark-cli — pass ISO 8601 times WITH an explicit
 offset, e.g. 2026-07-06T18:00:00-07:00):

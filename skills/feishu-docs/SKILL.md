@@ -3,6 +3,9 @@ name: feishu-docs
 description: Search, read, or create Feishu docs / 云文档 / drive 文件. Use for any request about a document's CONTENT — writing one, finding one, reading one, sharing one. The 知识库 space and its node tree are feishu-wiki.
 scopes: ["drive:drive", "docx:document"]
 commands: ["drive +search", "drive +member-add", "drive files list", "docs +create", "docs +fetch", "docs +update"]
+summary:
+  zh: "找文档、读文档、写文档，也能把文档分享给同事"
+  en: "Find, read, write, and share Feishu documents"
 ---
 Every command runs as the BOT. Values go through flags only.
 

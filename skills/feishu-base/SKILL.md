@@ -3,6 +3,9 @@ name: feishu-base
 description: Base (多维表格) — create bases and tables, write/update/query records, group and count, board views, grant access. Use for ANY 表格/多维表格/bitable/spreadsheet request or /base/ link — plain 电子表格 (sheets) is not enabled, Base covers it.
 scopes: ["base:app:create", "base:app:read", "base:table:read", "base:table:create", "base:field:read", "base:record:read", "base:record:create", "base:record:update", "base:record:delete", "base:view:read", "base:view:write_only", "drive:drive"]
 commands: ["base +base-create", "base +table-create", "base +table-list", "base +field-list", "base +field-create", "base +field-update", "base +record-upsert", "base +record-batch-create", "base +record-batch-update", "base +record-search", "base +record-list", "base +data-query", "base +view-create", "base +url-resolve", "drive +member-add"]
+summary:
+  zh: "建多维表格、填数据、查数据，按字段分组统计"
+  en: "Build and query Feishu Base tables — add records, update them, group and count"
 ---
 Every command below runs as the BOT and was verified live against this CLI. Values go
 through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
