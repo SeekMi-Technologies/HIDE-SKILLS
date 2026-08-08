@@ -7,13 +7,27 @@ summary:
 ---
 Transcripts live as artifacts; RBAC already decides what the asker may see (a rep sees
 their own calls, a supervisor sees everyone's). If a tool answers with a permission
-refusal, relay it — never work around it.
+refusal, that refusal IS the answer: say which permission is missing and who can grant
+it, then stop — never work around it.
 
 Finding calls:
 - list_artifacts() — everything the asker may read, newest first, one line per call
   with date, duration, speaker stats and a one-line summary.
 - list_artifacts(person="me") / list_artifacts(person="<person id from the Team
   directory>") — one rep's calls. Resolve names via the directory; never guess ids.
+- The Feishu doc created at transcription time is the HUMAN copy of the same
+  transcript. Analysis reads the artifact: read_artifact serves the words section by
+  section and is where artifacts:read is enforced. Fetching the doc (or searching
+  docs) instead pulls full transcripts into context at once and answers with content
+  outside the asker's scope — when an artifact exists, the doc is never the source.
+
+Choosing which calls:
+- "Analyze X's calls" when X has several stored calls and no date/topic narrows it is
+  an ask_user fork: reading the wrong call wastes the whole pass. Offer the most
+  recent 2–4 as options — label names the call (date + one-line summary), description
+  carries duration and talk share — recommendation first, then wait.
+- "综合分析" / "compare A and B" / "all of them" is not ambiguous: take every listed
+  call and go.
 
 Reading efficiently — the numbers come free, the words cost reads:
 - Every artifact card and listing line already carries duration, per-speaker talk
