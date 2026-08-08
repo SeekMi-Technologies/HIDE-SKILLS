@@ -11,8 +11,10 @@ when and for whom — never how.
 
 1. transcribe_audio(message_id, file_key, file_name) — copies the two ids EXACTLY from
    the `[attachment message_id=… file_key=…]` line. SLOW (minutes): ALWAYS run it in a
-   background task, and in the current turn reply first that transcription has started
-   and they will be notified. Returns an `[artifact af_…]` handle card.
+   background task — no exceptions: a rejected card or a foreground run earlier in the
+   chat decided only THAT recording, never the next one. In the current turn reply first
+   that transcription has started and they will be notified. Returns an `[artifact af_…]`
+   handle card.
 2. read_artifact(af_id, section="s03") — the transcript lives in storage, complete and
    never truncated, whatever the chat history shows. The card is its table of contents;
    read sections on demand. section="" lists the sections.
