@@ -14,9 +14,9 @@ when and for whom — never how.
      attachment. Copy the two ids EXACTLY from the `[attachment message_id=…
      file_key=…]` line. Every call pays for the audio again: call it ONCE.
    - transcribe_url(source_url) — it is a link (a URL in a base row, a hosted
-     recording). Paste the https URL whole, exactly as written. Re-running the same
-     link is free — one already transcribed for this person comes back from storage
-     unpaid — so a base full of recordings needs no bookkeeping from you.
+     recording). Paste the https URL whole, exactly as written. Never check whether a
+     link was transcribed before; the tool answers that itself. Say a transcript was
+     re-used, or that nothing was paid for, ONLY when its reply said so.
    Both are SLOW (minutes): ALWAYS run them in a background task — no exceptions: a
    rejected card or a foreground run earlier in the chat decided only THAT recording,
    never the next one. In the current turn reply first that transcription has started
