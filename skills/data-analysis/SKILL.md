@@ -72,9 +72,34 @@ overflowed twice, and the answers were no better than one `open()` would have gi
 ## Available in the sandbox
 
 `csv`, `json`, `statistics`, `datetime`, `re`, `collections`, `itertools`, `math`,
-`decimal` — plus **numpy**, **pillow (PIL)** and **matplotlib**.
+`decimal` — plus **numpy**, **pillow (PIL)**, **matplotlib** and **pypdf**.
 
 No network. No access to your other tools.
+
+### PDFs
+
+`read_attachment` already tells you the page count and the first few hundred words, which
+is often enough to answer "what is this document". To work with the whole thing:
+
+```python
+import pypdf
+reader = pypdf.PdfReader(path)
+text = "\n".join((page.extract_text() or "") for page in reader.pages)
+```
+
+Two things to know before you promise anything:
+
+- **A scanned PDF has no text to extract.** If `read_attachment` came back with
+  `likely_scanned`, or `extract_text()` returns almost nothing, the pages are pictures of
+  words. There is no OCR here. Say so plainly and ask for a text-based PDF or the figures
+  another way — do NOT report the document as empty, which is what the raw extraction
+  looks like.
+- **Tables come out as running text.** pypdf gives you a page's words in reading order,
+  not cells. For a simple two-column layout, splitting lines on runs of whitespace usually
+  works; for anything complicated, say what you can see and ask whether a CSV export
+  exists. A confidently wrong table is worse than an honest "this needs the source data".
+
+Quote page numbers when you cite something — `reader.pages` is zero-indexed, humans are not.
 
 ### Charts
 
