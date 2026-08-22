@@ -47,6 +47,25 @@ overflowed twice, and the answers were no better than one `open()` would have gi
   means "did not sit the exam" rather than "scored nothing" — name the count and what you
   did with it. A total presented as complete when it is not is worse than no total.
   If a `0` might mean "absent", give both figures and say which is which.
+- **Assume every field is dirty, especially in an export.** A real Langfuse export broke
+  two programs in a row this way: `judge_pass` was `[1]` (a list, so `Counter` raised
+  `unhashable type: 'list'`) and `latencyMs` mixed numbers with strings (so
+  `statistics.mean` raised `can't convert type 'str'`). Coerce at the edge, once:
+
+  ```python
+  def num(x):                      # for anything you will average or sum
+      try:    return float(x)
+      except (TypeError, ValueError): return None
+
+  def key(x):                      # for anything you will count or group by
+      return json.dumps(x, sort_keys=True) if isinstance(x, (list, dict)) else x
+
+  values = [v for v in (num(r.get("latencyMs")) for r in rows) if v is not None]
+  counts = collections.Counter(key(r.get("judge_pass")) for r in rows)
+  ```
+
+  Then report how many rows you had to skip. Guarding costs three lines; not guarding
+  costs the whole program on row 900 of 3000, after it has printed half the answer.
 - **Failures come back with the traceback.** Fix and retry ONCE. After two failures in a
   row, stop and report what broke.
 
