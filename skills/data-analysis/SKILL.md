@@ -79,8 +79,9 @@ plt.rcParams["font.sans-serif"] = ["WenQuanYi Zen Hei"]
 plt.rcParams["axes.unicode_minus"] = False        # or minus signs become boxes too
 ```
 
-A chart costs about 78 MiB and a second or two, well inside the sandbox's limits. Save PNG
-(it displays inline in more places) unless someone asks for SVG.
+A chart costs about 70 MiB and a second or two, well inside the sandbox's limits — the
+first one in a conversation is slower because the font cache is built once. Save PNG (it
+displays inline in more places) unless someone asks for SVG.
 
 Still true: if a picture would not actually help, say so and give a table. A clear table
 beats a bad chart, and three numbers never needed a chart at all.
