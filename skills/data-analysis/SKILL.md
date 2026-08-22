@@ -74,6 +74,9 @@ overflowed twice, and the answers were no better than one `open()` would have gi
 `csv`, `json`, `statistics`, `datetime`, `re`, `collections`, `itertools`, `math`,
 `decimal` — plus **numpy**, **pillow (PIL)**, **matplotlib** and **pypdf**.
 
+pypdf is the PDF reader here. **PyMuPDF / `import fitz` is not installed** and will not be —
+its licence rules it out — so do not spend a call discovering that.
+
 No network. No access to your other tools.
 
 ### PDFs
@@ -89,11 +92,18 @@ text = "\n".join((page.extract_text() or "") for page in reader.pages)
 
 Two things to know before you promise anything:
 
-- **A scanned PDF has no text to extract.** If `read_attachment` came back with
-  `likely_scanned`, or `extract_text()` returns almost nothing, the pages are pictures of
-  words. There is no OCR here. Say so plainly and ask for a text-based PDF or the figures
-  another way — do NOT report the document as empty, which is what the raw extraction
-  looks like.
+- **A PDF with no text layer is one you LOOK at, not one you extract.** When
+  `read_attachment` finds no text it renders the first pages and attaches them to its own
+  result as images — so the pages are already in front of you. Read the document from what
+  you can see. Two rules: this is not OCR, so say plainly what is too small or too unclear
+  to make out rather than guessing, and never invent a figure you cannot actually read. The
+  PNGs sit on disk beside the PDF, so you can crop or scale one in `run_python` when a
+  detail matters. Only if no pages came back is there nothing to be done — then say so and
+  ask for a text-based PDF, and do NOT report the document as empty, which is what the raw
+  extraction looks like.
+- **"No text layer" is not the same as "a scan."** A design or a map exported with its text
+  converted to outlines reads identically to a scan through pypdf. Describe what the pages
+  actually show; do not tell someone their poster is a bad scan.
 - **Tables come out as running text.** pypdf gives you a page's words in reading order,
   not cells. For a simple two-column layout, splitting lines on runs of whitespace usually
   works; for anything complicated, say what you can see and ask whether a CSV export
