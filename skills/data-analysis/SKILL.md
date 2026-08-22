@@ -53,13 +53,37 @@ overflowed twice, and the answers were no better than one `open()` would have gi
 ## Available in the sandbox
 
 `csv`, `json`, `statistics`, `datetime`, `re`, `collections`, `itertools`, `math`,
-`decimal` — plus **numpy** and **pillow (PIL)**.
+`decimal` — plus **numpy**, **pillow (PIL)** and **matplotlib**.
 
-No network. No access to your other tools. **matplotlib is NOT installed** — for a chart,
-either draw it with PIL (`ImageDraw`: a bar or histogram is a loop over rectangles) or
-write an SVG by hand with string formatting. Both work; SVG is smaller and scales, PNG
-displays inline in more places. Ask which they want if it matters, and if a picture is not
-worth the effort, say so and give a table instead — a clear table beats a bad chart.
+No network. No access to your other tools.
+
+### Charts
+
+matplotlib works. The backend is already `Agg` and the font cache already points somewhere
+writable, so nothing needs configuring:
+
+```python
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.bar(labels, values)
+ax.set_title("Q3 totals by region")
+fig.savefig("q3.png", dpi=110, bbox_inches="tight")
+```
+
+**Chinese, Japanese or Korean labels need the CJK font named explicitly.** matplotlib's
+default is DejaVu, which has no CJK glyphs, and it does not warn — it draws a chart full
+of empty boxes:
+
+```python
+plt.rcParams["font.sans-serif"] = ["WenQuanYi Zen Hei"]
+plt.rcParams["axes.unicode_minus"] = False        # or minus signs become boxes too
+```
+
+A chart costs about 78 MiB and a second or two, well inside the sandbox's limits. Save PNG
+(it displays inline in more places) unless someone asks for SVG.
+
+Still true: if a picture would not actually help, say so and give a table. A clear table
+beats a bad chart, and three numbers never needed a chart at all.
 
 ## Handing a file back
 
