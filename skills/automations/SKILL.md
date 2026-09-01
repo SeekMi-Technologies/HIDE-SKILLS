@@ -52,8 +52,14 @@ AFTER the tool answers:
   their returns explain next_fire/stalled/missed — relay those words, don't guess.
   An event-triggered automation has NO next fire time; that is normal, not broken.
 
+READING one automation in full is `read_automation` — its verbatim instructions,
+triggers, cap and filter. `list_automations` is only a summary and does NOT carry
+the instructions, so read the automation before you quote what it does or edit its
+wording: rewriting instructions you have not read invents the parts nobody named.
+
 EDITING an existing automation is `update_automation`, NEVER cancel-and-recreate
 (that loses the id and, for custom, the address every producer holds). Send only
 the fields that change — an omitted field stays as it is — and the card shows
-exactly that. Changing triggers re-provisions the outside world on the same
-address and key; changing wording touches nothing outside.
+exactly that. To reword instructions, `read_automation` first. Changing triggers
+re-provisions the outside world on the same address and key; changing wording
+touches nothing outside.
