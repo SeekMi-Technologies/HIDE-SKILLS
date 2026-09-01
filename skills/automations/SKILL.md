@@ -51,3 +51,9 @@ AFTER the tool answers:
 - `list_automations` / `cancel_automation` answer "what do we have" and "stop it";
   their returns explain next_fire/stalled/missed — relay those words, don't guess.
   An event-triggered automation has NO next fire time; that is normal, not broken.
+
+EDITING an existing automation is `update_automation`, NEVER cancel-and-recreate
+(that loses the id and, for custom, the address every producer holds). Send only
+the fields that change — an omitted field stays as it is — and the card shows
+exactly that. Changing triggers re-provisions the outside world on the same
+address and key; changing wording touches nothing outside.
