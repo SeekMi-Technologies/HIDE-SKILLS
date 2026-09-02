@@ -7,6 +7,9 @@ summary:
   zh: "建多维表格、填数据、查数据，按字段分组统计"
   en: "Build and query Feishu Base tables — add records, update them, group and count"
 ---
+Wiring a table TO AN AUTOMATION (new record → a run fires) is NOT this skill:
+read feishu-base-automation instead. This one is reading and writing the data.
+
 Every command below runs as the BOT and was verified live against this CLI. Values go
 through flags only; `--table-id` accepts a table NAME as well as a `tbl…` id.
 
