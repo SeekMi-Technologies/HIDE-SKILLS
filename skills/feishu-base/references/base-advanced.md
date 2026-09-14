@@ -101,6 +101,28 @@ first — never construct one.
 describes a Base you have never read. `+base-get` returns the Base's own metadata;
 `+base-copy` duplicates one.
 
+## Importing a CSV someone sent
+
+Only when `read_attachment` and `run_python` are in your tools (Code actions on). If they
+are not, files cannot be taken in on this workspace — say that and stop.
+
+1. `read_attachment` the file in the SAME turn it arrives. An `.xlsx`/`.xls` cannot be read
+   here (no Excel library): ask for a CSV export instead.
+2. `+field-list` the target table (create it first if asked) — the real writable fields
+   and their types decide every value in the next step.
+3. ONE `run_python` per batch: open the path, map CSV columns to field names, coerce every
+   value to its CellValue (number → float, select → the exact option text, datetime →
+   `"YYYY-MM-DD HH:MM:SS"`, blank → `null`), and print a single compact
+   `{"fields":[…],"rows":[[…],…]}` object — plus how many rows were skipped and why.
+4. `["base", "+record-batch-create", "--base-token", "<tok>", "--table-id", "<表名>",
+   "--json", "<that object>"]` for that batch; then the next batch.
+
+Batches carry ≤200 rows (the command's limit) AND must print under ~3 500 characters —
+past `run_python`'s inline limit the output spills to a file and you only see a preview,
+which must never be hand-copied into a write. So this is for tens to a couple of hundred
+rows. For anything bigger, say so and point the person to Base's own import
+(多维表格 → 导入 CSV/Excel), which takes the file directly.
+
 ## Not available — two different answers, never blur them
 
 **The scope was never granted** (the app can do it; an admin has to turn it on). Name the
@@ -108,8 +130,7 @@ permission, say the admin was sent a grant link, stop: dashboards `base:dashboar
 forms `base:form:read`, workflows `base:workflow:read`, roles and advanced permissions
 `base:role:read`, one record's change history `base:history:read`.
 
-**No file channel yet.** Attachment upload/download and importing a local .xlsx/.csv into
-a Base both need a file on disk, and this bot has no way to receive one. Say the file
-cannot be taken in yet — do not offer a workaround.
+**Attachment fields (附件) are not writable.** No command here uploads a file into a
+record. Say so — do not offer a workaround.
 
 For any other Base surface none of this describes, say what you cannot do and stop.
