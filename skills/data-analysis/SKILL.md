@@ -1,6 +1,6 @@
 ---
 name: data-analysis
-description: Analyse a data file someone sent — a CSV, TSV, JSON or text export — by writing Python that reads it, and hand back numbers, a file or a chart. Read this the moment a message carries a data file, or someone asks you to count, total, group, rank, compare or chart something in one. NOT for audio (feishu-transcribe owns that).
+description: Analyse a data file someone sent — a CSV, TSV, JSON, PDF or text export — by writing Python that reads it, and hand back numbers, a file or a chart; also compute in code over a toolkit read too big to page through. Read this the moment a message carries a data file, or someone asks you to count, total, group, rank, compare or chart something. NOT for audio (feishu-transcribe owns that).
 scopes: ["im:resource", "docx:document", "drive:drive"]
 commands: ["docs +create", "docs +media-insert", "drive +member-add"]
 summary:
@@ -9,6 +9,11 @@ summary:
 ---
 Three tools, in this order: `read_attachment` puts the file on disk, `run_python` reads it
 and computes, `stage_artifact` hands a produced file back to the Feishu tools.
+
+**If `run_python` is not in your tools, Code actions is switched off for this workspace**
+(or this deployment has not been upgraded yet). Then none of this applies: say you cannot
+open or compute over files here, describe what you can see (name, size, type), and offer
+what you can do without code. Never pretend to have run an analysis.
 
 ## The one rule that matters
 
@@ -80,7 +85,47 @@ overflowed twice, and the answers were no better than one `open()` would have gi
 pypdf is the PDF reader here. **PyMuPDF / `import fitz` is not installed** and will not be —
 its licence rules it out — so do not spend a call discovering that.
 
-No network. No access to your other tools.
+**Excel cannot be read here** — there is no openpyxl, xlrd or pandas. For an `.xlsx`/`.xls`,
+ask for a CSV export (File → Save As → CSV in Excel/WPS/Numbers) rather than trying.
+
+No network, and no credentials. The one way out is the bridge, below.
+
+## Reading your tools from inside the program (the bridge)
+
+When you load a toolkit and the result says its read-only tools are *also callable as
+`hide.<toolkit>.<TOOL>(...)`*, the program can call them directly. Use it whenever a read
+would be too big to page through the conversation — every issue in a repo, every page of
+a list — and print only what you worked out:
+
+```python
+issues = hide.github.GITHUB_LIST_REPOSITORY_ISSUES(owner="o", repo="r", state="open", per_page=100)
+```
+
+Tool names are exactly the ones the load message listed, full prefix included.
+Independent reads go in ONE round trip — the child makes one request at a time, so twelve
+single calls are twelve serial waits:
+
+```python
+rows = hide.gather([
+    (hide.github.GITHUB_LIST_REPOSITORY_ISSUES, {"owner": "o", "repo": "a"}),
+    (hide.github.GITHUB_LIST_REPOSITORY_ISSUES, {"owner": "o", "repo": "b"}),
+])
+ok = [r for r in rows if not isinstance(r, Exception)]   # a failed read is an Exception in its slot
+```
+
+Pass the tool itself in `hide.gather`, not the result of calling it. Only reads work in
+code: anything that writes or needs approval raises `NeedsApproval` (catch it, print what
+you would have changed, then make that change as an ordinary tool call where the person
+can confirm it). A tool the load message did not offer as `hide.…` is not reachable from
+code — do not guess names.
+
+## A file a tool only LINKED to
+
+Some tools answer with a short-lived signed URL instead of the content — GitHub Actions
+logs are the usual one. If `stage_url` is in your tools, pass the URL exactly as the tool
+returned it, in the same turn (links expire), and the file lands on disk for `run_python`;
+a zip is unpacked for you. If `stage_url` is not in your tools, fetching by URL is switched
+off here — ask the tool for the content directly, or ask the person to send the file.
 
 ### PDFs
 
