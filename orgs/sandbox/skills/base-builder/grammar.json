@@ -1,0 +1,42 @@
+{
+  "_comment": "The lark-cli Base grammar, as DATA. Every entry was verified live against the pinned CLI and is quoted in skills/feishu-base/. The validator in build.py refuses exactly what the CLI refuses, offline, before a single call is made. Update this file when the CLI moves; no code changes.",
+  "cli_version_verified": "1.0.63",
+  "limits": {
+    "rows_per_batch": 200,
+    "select_options": 50,
+    "sort_keys": 10,
+    "read_limit": 200,
+    "payload_bytes_warn": 4000000
+  },
+  "field_types": ["text", "number", "select", "multi_select", "datetime", "user",
+                  "group_chat", "link", "checkbox", "attachment", "location",
+                  "auto_number", "created_at", "updated_at", "created_by", "updated_by"],
+  "view_types": ["grid", "kanban", "gallery", "calendar", "gantt"],
+  "datetime_format": "%Y-%m-%d %H:%M:%S",
+  "rejected_keys": {
+    "field": ["field_name", "ui_type", "property", "type_id"],
+    "view": ["view_name", "view_type"],
+    "field_update": ["id", "bidirectional_link_field_id"]
+  },
+  "rejections": {
+    "records_as_object_array": "batch JSON is COLUMNAR: {\"fields\":[...],\"rows\":[[...]]}. An array of record objects is rejected by the API.",
+    "field_name_key": "field JSON is top-level {name, type, ...} — field_name / ui_type / property are rejected.",
+    "view_name_key": "view JSON keys are name / type — view_name / view_type fail with 800010701.",
+    "filter_condition_object": "--filter-json conditions are TUPLES [field, operator, value]; {\"field\":...} objects fail with 'Expected array, received object'.",
+    "link_property_wrapper": "link_table rides at the TOP level of field JSON; a property wrapper or type:18 is rejected.",
+    "absolute_json_file": "a --json @file path must be RELATIVE and inside the CLI's cwd; an absolute one is refused outright."
+  },
+  "filter_operators": ["==", "!=", ">", ">=", "<", "<=", "intersects", "disjoint",
+                       "empty", "non_empty"],
+  "cell_dialect": {
+    "text": "a string",
+    "number": "a bare number, never a string",
+    "select": "the plain option string (reads return [\"x\"], writes take \"x\")",
+    "multi_select": "an array of option strings",
+    "datetime": "\"YYYY-MM-DD HH:MM:SS\"",
+    "checkbox": "true / false",
+    "user": "[{\"id\": \"ou_...\"}]",
+    "link": "[{\"id\": \"rec_...\"}] — ids READ off the target table, never constructed",
+    "empty": "null empties a cell"
+  }
+}
