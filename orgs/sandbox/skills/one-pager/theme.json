@@ -1,0 +1,30 @@
+{
+  "_comment": "Swap these values to rebrand the one-pager; report.py reads this file and falls back to its own defaults if it is missing or unreadable. Colours come from the validated default data-viz palette (light surface). Re-run a palette validator before changing a hue.",
+  "surface": "#fcfcfb",
+  "panel": "#ffffff",
+  "ink": "#0b0b0b",
+  "ink_secondary": "#52514e",
+  "ink_muted": "#8a8983",
+  "rule": "#e2e1dc",
+  "grid": "#e7e6e2",
+  "series": ["#2a78d6", "#eb6834", "#1baf7a"],
+  "bar": "#2a78d6",
+  "bar_track": "#eef3fb",
+  "good": "#0ca30c",
+  "bad": "#d03b3b",
+  "warning": "#fab219",
+  "fonts": ["Noto Sans CJK SC", "WenQuanYi Zen Hei", "Source Han Sans SC",
+            "Noto Sans CJK JP", "Heiti SC", "Microsoft YaHei", "DejaVu Sans"],
+  "type_scale": {
+    "title": 22,
+    "subtitle": 11,
+    "tile_label": 10.5,
+    "tile_value": 26,
+    "tile_delta": 10.5,
+    "panel_title": 12.5,
+    "tick": 9.5,
+    "bar_label": 10.5,
+    "footer": 9
+  },
+  "figure": {"width_in": 11.0, "height_in": 7.0, "dpi": 150}
+}

@@ -140,6 +140,10 @@ displays inline in more places) unless someone asks for SVG.
 Still true: if a picture would not actually help, say so and give a table. A clear table
 beats a bad chart, and three numbers never needed a chart at all.
 
+For a single polished page to forward — KPI tiles, a trend and a ranked list in one image
+— read `one-pager` instead: it ships the renderer, so the styling and the CJK font are
+already handled and the whole thing is one call.
+
 ## Handing a file back
 
 `stage_artifact(path)` moves it where the Feishu tools can see it and returns a short
