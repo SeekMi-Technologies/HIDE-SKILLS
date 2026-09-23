@@ -118,8 +118,8 @@ Traps and boundaries:
 - 仪表盘, 表单, 流程, 角色/高级权限 and 记录修改历史 all need a scope this app was never
   granted: name the permission, say the admin was sent a grant link, stop. Importing a
   CSV someone sent works when `run_python` is in your tools (small files — recipe in
-  references/base-advanced.md); an Excel file has to come as CSV; 附件 (attachment
-  fields) still cannot be written.
+  references/base-advanced.md); an Excel file needs `install_package` (openpyxl/xlrd) or
+  has to come as CSV; 附件 (attachment fields) still cannot be written.
 - A plain 电子表格 (sheets) request lands here too: that domain is not enabled, so build a
   Base — typed columns cover the same need. Only say spreadsheets are unavailable if the
   person insists on an actual .xlsx.
