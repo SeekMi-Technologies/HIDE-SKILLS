@@ -106,8 +106,9 @@ describes a Base you have never read. `+base-get` returns the Base's own metadat
 Only when `read_attachment` and `run_python` are in your tools (Code actions on). If they
 are not, files cannot be taken in on this workspace — say that and stop.
 
-1. `read_attachment` the file in the SAME turn it arrives. An `.xlsx`/`.xls` cannot be read
-   here (no Excel library): ask for a CSV export instead.
+1. `read_attachment` the file in the SAME turn it arrives. An `.xlsx` needs `openpyxl`
+   (`.xls`: `xlrd`): install it with `install_package` if that tool is in your tools
+   (data-analysis has the recipe), otherwise ask for a CSV export instead.
 2. `+field-list` the target table (create it first if asked) — the real writable fields
    and their types decide every value in the next step.
 3. ONE `run_python` per batch: open the path, map CSV columns to field names, coerce every

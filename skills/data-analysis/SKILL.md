@@ -1,6 +1,6 @@
 ---
 name: data-analysis
-description: Analyse a data file someone sent — a CSV, TSV, JSON, PDF or text export — by writing Python that reads it, and hand back numbers, a file or a chart; also compute in code over a toolkit read too big to page through. Read this the moment a message carries a data file, or someone asks you to count, total, group, rank, compare or chart something. NOT for audio (feishu-transcribe owns that).
+description: Analyse a data file someone sent — CSV, TSV, JSON, PDF, Excel or a text export — by writing Python that reads it, and hand back numbers, a file or a chart; also compute over a toolkit read too big to page through, and install a missing library. Read this the moment a message carries a data file, someone asks you to count, total, rank or chart something, or run_python hits ModuleNotFoundError. NOT for audio (feishu-transcribe).
 scopes: ["im:resource", "docx:document", "drive:drive"]
 commands: ["docs +create", "docs +media-insert", "drive +member-add"]
 summary:
@@ -85,10 +85,53 @@ overflowed twice, and the answers were no better than one `open()` would have gi
 pypdf is the PDF reader here. **PyMuPDF / `import fitz` is not installed** and will not be —
 its licence rules it out — so do not spend a call discovering that.
 
-**Excel cannot be read here** — there is no openpyxl, xlrd or pandas. For an `.xlsx`/`.xls`,
-ask for a CSV export (File → Save As → CSV in Excel/WPS/Numbers) rather than trying.
+**Excel is not preinstalled** — there is no openpyxl, xlrd or pandas out of the box. If
+`install_package` is in your tools, install the reader (below): `openpyxl` for `.xlsx`,
+`xlrd` for the old `.xls`. If not, ask for a CSV export (File → Save As → CSV in
+Excel/WPS/Numbers) rather than trying.
 
-No network, and no credentials. The one way out is the bridge, below.
+No network, and no credentials. The program cannot `pip install` — the only ways out are
+the bridge and `install_package`, both below.
+
+## Installing a missing library (`install_package`)
+
+Only when `install_package` is in your tools (Package installs switched on for this
+workspace). If it is not, the sandbox is what it is: work with the list above, or say
+what the task would need.
+
+- **Install only for a real need.** A `ModuleNotFoundError`, an `.xlsx` to read, a format
+  the standard library cannot parse. Do not install pandas to sum a column — `csv` and
+  `statistics` do that, and they are what you write most reliably.
+- **Name everything in ONE call.** `install_package(["openpyxl"])`, or
+  `install_package(["pandas", "openpyxl"])` — `requirements` is a list, and one call is
+  one install and at most one approval. Five one-package calls are five cards for a
+  person to tap. Pin a version only when the task needs a specific one.
+- **It may pause for approval.** Packages outside the workspace's allowlist wait on a
+  card. That pause is the answer for this turn — do not retry, and do not try to work
+  around it in code.
+- **Read the result.** `installed` lists what landed, `already_available` what was there
+  already. A refusal says why in one line — a conflict with an installed version (those
+  cannot be upgraded or replaced: ask for a compatible version, or do without), no wheel
+  for this sandbox (source-only packages never install), or not allowed (tell the person
+  and stop). Say it plainly; do not guess at another package name to get around it.
+- **Then import it as usual** in `run_python`. Installs last for this conversation only;
+  in a new conversation, install again.
+- A `note` about compiled extensions means a large library may fail to import with
+  `MemoryError` under the sandbox's memory limit. If it does, say so rather than retrying.
+
+```python
+# after install_package(["openpyxl"])
+from openpyxl import load_workbook
+wb = load_workbook(path, read_only=True, data_only=True)   # data_only: values, not formulas
+ws = wb.active
+rows = list(ws.iter_rows(values_only=True))
+header, body = rows[0], rows[1:]
+print(wb.sheetnames, len(body))
+```
+
+`data_only=True` returns the values Excel last saved; a workbook never opened in Excel
+may have formulas with no cached value — those come back as `None`, so say so rather than
+reporting blanks as zeros. Name the sheet you used when there is more than one.
 
 ## Reading your tools from inside the program (the bridge)
 
